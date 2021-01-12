@@ -296,7 +296,7 @@
                     trx.AddTrail("INPUT PIN EDC", "", "CANCELED");
                     isEDC = false;
                     Utility.WriteLog("Home condition : move to ambil kartu", "step-action");
-                    trx.statusLayanan = "CANCEL";
+                    //trx.statusLayanan = "CANCEL";
                     //HitLog.SendLog(trx, config, "INPUT PIN: " + "Input Pin Canceled");
                     OnClick.InvokeAsync("default");
                     break;
@@ -807,7 +807,7 @@
                 errorcode = "Exception";
                 errormessage = ex.Message;
                 trx.statusLayanan = "ERROR";
-                //HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
+                HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
                 trx.setErrorService(errorcode, errormessage);
                 OnClick.InvokeAsync("error");
             }
@@ -818,7 +818,7 @@
             errorcode = "Exception";
             errormessage = ex.Message;
             trx.statusLayanan = "ERROR";
-            //HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
+            HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
             trx.setErrorService(errorcode, errormessage);
             OnClick.InvokeAsync("error");
         }
@@ -854,6 +854,8 @@
                             errormessage = "Card has disabled";
                             trx.setErrorService(errorcode, errormessage);
                             isInquiry = false;
+                            trx.statusLayanan = "ERROR";
+                            HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
                             OnClick.InvokeAsync("error");
                             return;
                         }
@@ -995,6 +997,8 @@
                 errorcode = "Exception";
                 errormessage = ex.Message;
                 trx.setErrorService(errorcode, errormessage);
+                trx.statusLayanan = "ERROR";
+                HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
                 OnClick.InvokeAsync("error");
             }
         }
@@ -1014,6 +1018,8 @@
             errorcode = "Exception";
             errormessage = ex.Message;
             trx.setErrorService(errorcode, errormessage);
+            trx.statusLayanan = "ERROR";
+            HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
             OnClick.InvokeAsync("error");
         }
     }
@@ -1083,6 +1089,8 @@
                 errorcode = "Exception";
                 errormessage = ex.Message;
                 trx.setErrorService(errorcode, errormessage);
+                trx.statusLayanan = "ERROR";
+                HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
                 OnClick.InvokeAsync("error");
             }
         }
@@ -1102,6 +1110,8 @@
             errorcode = "Exception";
             errormessage = ex.Message;
             trx.setErrorService(errorcode, errormessage);
+            trx.statusLayanan = "ERROR";
+            HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
             OnClick.InvokeAsync("error");
         }
     }

@@ -437,7 +437,7 @@
                         errorcode = (string)jobResult["RESPONSE"].SelectToken("ERROR_CODE");
                         errormessage = (string)jobResult["RESPONSE"].SelectToken("RESPONSE_MESSAGE");
                         trx.setErrorService(errorcode, errormessage);
-                        trx.statusLayanan = "CANCEL";
+                        trx.statusLayanan = "ERROR";
                         //HitLog.SendLog(trx, config, "HISTORY PILIH: " + errormessage);
                         trx.ExternalID2 = (string)jobResult["externalId"];
                         trx.externalID = trx.ExternalID2;
@@ -590,9 +590,9 @@
         isTimeOut = true;
         isTimer = false;
         Utility.WriteLog("Histori condition : move to ambil kartu", "step-action");
-        trx.statusLayanan = "CANCEL";
+        //trx.statusLayanan = "CANCEL";
         //HitLog.SendLog(trx, config, "HISTORY PILIH: User Cancel Transaction");
-        HitServices.SendLog(trx, config, "HISTORY PILIH: User Cancel Transaction");
+        //HitServices.SendLog(trx, config, "HISTORY PILIH: User Cancel Transaction");
         OnClick.InvokeAsync("default");
     }
 }

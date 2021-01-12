@@ -347,7 +347,7 @@
                 StateHasChanged();
                 await Task.Delay(2000);
                 isTime = false;
-                trx.statusLayanan = "CANCEL";
+                //trx.statusLayanan = "CANCEL";
                 //HitLog.SendLog(trx, config, "NEW HOME: Konfirmasi Timeout");
                 HitServices.SendLog(trx, config, "BUKU INPUT DATA: Konfirmasi Timeout");
                 OnClick.InvokeAsync("konfirmasitimeout");
@@ -380,6 +380,7 @@
             errorcode = "BISNIS";
             errormessage = "This Account is BISNIS";
             trx.setErrorService(errorcode, errormessage);
+            trx.statusLayanan = "ERROR";
             //HitLog.SendLog(trx, config, "BUKU INPUT DATA: " + errormessage);
             HitServices.SendLog(trx, config, "BUKU INPUT DATA: " + errormessage);
             isTimeOut = true;
@@ -436,6 +437,7 @@
             case "3":
                 errorcode = "NotStatus";
                 errormessage = "Account Status Matured but Not Closed";
+                trx.statusLayanan = "ERROR";
                 //HitLog.SendLog(trx, config, "BUKU INPUT DATA: " + errormessage);
                 HitServices.SendLog(trx, config, "BUKU INPUT DATA: " + errormessage);
                 trx.setErrorService(errorcode, errormessage);

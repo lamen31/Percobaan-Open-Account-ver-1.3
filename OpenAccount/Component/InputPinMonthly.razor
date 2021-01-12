@@ -200,7 +200,7 @@
                             if (isCIFInquiry)
                             {
                                 trx._AccountNumber2 = trx._AccountNumber;
-                                OnClick.InvokeAsync("konfirmasiawal");
+                                OnClick.InvokeAsync("newhome");
                                 return;
                             }
                             else
@@ -261,8 +261,8 @@
                     trx.AddTrail("INPUT PIN EDC", "", "CANCELED");
                     isEDC = false;
                     Utility.WriteLog("Home condition : move to ambil kartu", "step-action");
-                    trx.statusLayanan = "CANCEL";
-                    HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: User Cancel Transaction");
+                    //trx.statusLayanan = "CANCEL";
+                    //HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: User Cancel Transaction");
                     OnClick.InvokeAsync("ambilkartu");
                     break;
                 }
@@ -280,8 +280,8 @@
             {
                 Console.WriteLine(ex.Message);
                 Utility.WriteLog("Home condition : EDC error --> " + ex.Message, "step-action");
-                trx.statusLayanan = "ERROR";
-                HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC Error --> " + ex.Message);
+                //trx.statusLayanan = "ERROR";
+                //HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC Error --> " + ex.Message);
                 trx.setErrorService("Exception", ex.Message);
                 OnClick.InvokeAsync("error");
             }
@@ -448,8 +448,8 @@
             Utility.WriteLog("Home condition : EDC error --> " + ex.Message, "step-action");
             trx.AddTrail("OPEN SERIAL EDC", "", "FAILED");
             isLoop = false;
-            trx.statusLayanan = "ERROR";
-            HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC Error --> " + ex.Message);
+            //trx.statusLayanan = "ERROR";
+            //HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC Error --> " + ex.Message);
             trx.setErrorService("Exception", ex.Message);
             OnClick.InvokeAsync("error");
         }
@@ -662,8 +662,8 @@
                 {
                     serialPort.Close();
                     Utility.WriteLog("Home condition : EDC NAK", "step-action");
-                    trx.statusLayanan = "ERROR";
-                    HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC NAK ");
+                    //trx.statusLayanan = "ERROR";
+                    //HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC NAK ");
                     trx.setErrorService("", "EDC Return NAK");
                     OnClick.InvokeAsync("error");
                 }
@@ -708,6 +708,11 @@
                     else if ((string)jobResult["RESPONSE"].SelectToken("ERROR_CODE") == "CM-25" && (string)jobResult["RESPONSE"].SelectToken("RESPONSE_CODE") == "25")
                     {
                         isNotFound = true;
+                        errorcode = (string)jobResult["RESPONSE"].SelectToken("ERROR_CODE");
+                        errormessage = (string)jobResult["RESPONSE"].SelectToken("RESPONSE_MESSAGE");
+                        trx.statusLayanan = "ERROR";
+                        trx.externalID = (string)jobResult["externalId"];
+                        HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
                         return;
                     }
                     else if ((string)jobResult["RESPONSE"].SelectToken("ERROR_CODE") == "ES-EP" && (string)jobResult["RESPONSE"].SelectToken("RESPONSE_CODE") == "EP")
@@ -721,6 +726,7 @@
                         errormessage = (string)jobResult["RESPONSE"].SelectToken("RESPONSE_MESSAGE");
                         trx.setErrorService(errorcode, errormessage);
                         trx.statusLayanan = "ERROR";
+                        trx.externalID = (string)jobResult["externalId"];
                         HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: " + errormessage);
                         StateHasChanged();
                         OnClick.InvokeAsync("error");
@@ -736,6 +742,7 @@
                         errorcode = (string)jobResult["RESPONSE"].SelectToken("ERROR_CODE");
                         errormessage = (string)jobResult["RESPONSE"].SelectToken("RESPONSE_MESSAGE");
                         trx.statusLayanan = "ERROR";
+                        trx.externalID = (string)jobResult["externalId"];
                         HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: " + errormessage);
                         trx.setErrorService(errorcode, errormessage);
                         StateHasChanged();
@@ -750,6 +757,7 @@
                         errorcode = (string)jobResult["RESPONSE"].SelectToken("ERROR_CODE");
                         errormessage = (string)jobResult["RESPONSE"].SelectToken("RESPONSE_MESSAGE");
                         trx.statusLayanan = "ERROR";
+                        trx.externalID = (string)jobResult["externalId"];
                         HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: " + errormessage);
                         trx.setErrorService(errorcode, errormessage);
                         StateHasChanged();
@@ -766,6 +774,7 @@
                         errorcode = (string)jobResult["RESPONSE"].SelectToken("ERROR_CODE");
                         errormessage = (string)jobResult["RESPONSE"].SelectToken("RESPONSE_MESSAGE");
                         trx.statusLayanan = "ERROR";
+                        trx.externalID = (string)jobResult["externalId"];
                         HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: " + errormessage);
                         trx.setErrorService(errorcode, errormessage);
                         StateHasChanged();
@@ -827,6 +836,8 @@
                             errormessage = "Card has disabled";
                             trx.setErrorService(errorcode, errormessage);
                             isInquiry = false;
+                            trx.statusLayanan = "ERROR";
+                            HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
                             OnClick.InvokeAsync("error");
                             return;
                         }
@@ -869,6 +880,7 @@
                         errormessage = (string)jobResult["RESPONSE"].SelectToken("RESPONSE_MESSAGE");
                         trx.setErrorService(errorcode, errormessage);
                         trx.statusLayanan = "ERROR";
+                        trx.externalID = (string)jobResult["externalId"];
                         HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry By Card No --> " + errormessage);
                         OnClick.InvokeAsync("error");
                     }
