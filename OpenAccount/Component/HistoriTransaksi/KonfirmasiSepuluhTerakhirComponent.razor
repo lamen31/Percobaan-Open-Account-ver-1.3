@@ -1,0 +1,410 @@
+﻿@using Microsoft.AspNetCore.Components
+@using OpenAccount.Data
+@using System.IO
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@inject Transaksi trx
+@inject Config config
+@inject Printer print
+@inject HitServices services
+<!-- ======= Hero Section ======= -->
+<section id="hero">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <span class="badge badge-primary" style="margin-bottom: 2rem; font-size: 20px;">Cetak Histori Transaksi</span><br>
+                    <teks>Hello, @trx.namaNasabah</teks>
+                    <h3 style="color: #00529C; margin-right: -2rem;">Anda akan Mencetak  Histori Transaksi pada</h3><br>
+                    <div style="margin-top:5%;">
+                        <h3 style="color: #00529C;"><b>Sepuluh Transaksi Terakhir</b></h3>
+                        <h3 style="color: #00529C;"><b>Sampai Dengan</b></h3>
+                        <h3 style="color: #F15A23;"><b>@date</b></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                <img src="../assets/img/10-transaksi.png" class="img-fluid" alt="" style="margin-top: 5%;">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+<!-- ======= Footer ======= -->
+<footer id="footer" class="fixed-bottom">
+    <div class="container" style="display: flex;">
+        <div class="col-xl-2 order-1 order-lg-1">
+            <button type="button" class="btn btn-primary" style="background-color: #4E4E4E;" @onclick="PilihHistori">Kembali</button>
+        </div>
+        <div class="col-xl-8 order-2 order-lg-2">
+            <ol class="track-progress" style="margin-left: 0%; margin-bottom: 2%;">
+                <li class="done">
+                    <em>1</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>2</em>
+                    <!-- <span>T & C</span> -->
+                </li>
+                <li class="done">
+                    <em>3</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>4</em>
+                    <!-- <span>Verification</span> -->
+                </li>
+                <li class="todo">
+                    <em>5</em>
+                    <!-- <span>Insert Money</span> -->
+                </li>
+            </ol>
+        </div>
+        <div class="col-xl-2 order-3 order-lg-3">
+            <button type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#exampleModalCenter" @onclick="HistoriBerhasil">Cetak</button>
+        </div>
+    </div>
+</footer><!-- End Footer -->
+@if (isVisible)
+{
+    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">Mohon tunggu,</h3>
+                        <h5 style="font-style:italic;">Sedang dalam proses...</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isRead)
+{
+    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">Mohon tunggu,</h3>
+                        <h5 style="font-style:italic;">Sistem sedang membaca data tabungan anda</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isTime)
+{
+    <div class="modal" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">MAAF,</h3>
+                        <h5 style="font-style:italic;">Waktu Anda Telah Habis!</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (isError)
+{
+    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">SISTEM ERROR</h3>
+                        <h5 style="font-style:italic;">Silahkan Hubungi Customer Service.</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private bool isVisible = false;
+    private bool isRead = false;
+    private string date;
+    private string[] TRACCT;
+    private string[] TRDATE;
+    private string[] TRDATE2;
+    private string[] TIMENT;
+    private string[] DORC;
+    private string[] AMT;
+    private string[] TRREMK;
+    private string saldo;
+    private string path;
+    private string[] lines;
+    private string jumlahtransaksi;
+    private int tempjumlahtransaksi;
+    private string noRekening = "008301031142500";
+    private TimeSpan span;
+    private int overtime = 1800000;
+    private bool isTimeOut = false;
+    private bool isTime = false;
+    private DateTime starttime;
+    private bool isError = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("1");
+        date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd");
+        trx.clearArray();
+        path = Directory.GetCurrentDirectory();
+        path += config.Read("PATH", Config.PARAM_PATH_THERMAL);
+        lines = File.ReadAllLines(path);
+        TRACCT = new string[lines.Length];
+        TRDATE = new string[lines.Length];
+        TRDATE2 = new string[lines.Length];
+        TIMENT = new string[lines.Length];
+        DORC = new string[lines.Length];
+        AMT = new string[lines.Length];
+        TRREMK = new string[lines.Length];
+        saldo = config.Read("NASABAH", Config.PARAM_SALDO_NASABAH);
+
+        await Task.Delay(500);
+        isRead = true;
+        await Task.Delay(100);
+        StateHasChanged();
+        Utility.WriteLog("Histori condition : hit service thermal start", "step-action");
+        await ServiceThermal();
+
+        //for (int i = 0; i < lines.Length; i++)
+        //{
+        //    string[] column = lines[i].Split(";");
+        //    for (int j = 0; j < column.Length; j++)
+        //    {
+        //        if (j == 0)
+        //        {
+        //            TRACCT[i] = column[j];
+        //        }
+        //        else if (j == 1)
+        //        {
+        //            TRDATE[i] = column[j];
+        //        }
+        //        else if (j == 2)
+        //        {
+        //            TRDATE2[i] = column[j];
+        //        }
+        //        else if (j == 3)
+        //        {
+        //            TIMENT[i] = column[j];
+        //        }
+        //        else if (j == 4)
+        //        {
+        //            DORC[i] = column[j];
+        //        }
+        //        else if (j == 5)
+        //        {
+        //            AMT[i] = column[j];
+        //        }
+        //        else if (j == 6)
+        //        {
+        //            TRREMK[i] = column[j];
+        //            trx.AddListThermal2(TRACCT[i], TRDATE[i], TRDATE2[i], TIMENT[i], DORC[i], AMT[i], TRREMK[i]);
+        //        }
+        //    }
+        //}
+
+        Utility.WriteLog("Histori condition : input data from " + path + " success", "step-action");
+        jumlahtransaksi = tempjumlahtransaksi.ToString();
+        //trx.setHistoriThermal(tanggal, kode, nominal, saldo);
+        trx.setSaldoThermal(saldo);
+        Utility.WriteLog("Histori condition : set saldo thermal success", "step-action");
+    }
+
+    //private async Task ServiceThermal()
+    //{
+    //    string myJson = "{\"name\":\"name\"," + "\"job\":\"job\"}";
+    //    string myLink = config.Read("LINK", Config.PARAM_SERVICES_LINK);
+    //    string myUrl = myLink + config.Read("LINK", Config.PARAM_SERVICES_THERMAL) + "/" + trx._Nasabah[1];
+    //    //trx._Nasabah[1] = myUrl.Substring(myUrl.Length - 15, 15);
+    //    Utility.WriteLog("Histori condition : get service start", "step-action");
+    //    string strResultGET = await services.GetCallAPI(myUrl, myJson);
+    //    if (strResultGET != null)
+    //    {
+    //        JObject jobResult = JObject.Parse(strResultGET);
+    //        trx.setTransaksiID((string)jobResult["transaction"].SelectToken("transactionId"));
+    //        Utility.WriteLog("Histori condition : set transaksi ID " + trx._TransaksiID + " success", "step-action");
+
+    //        if ((string)jobResult["transaction"].SelectToken("responseCode") == "0000")
+    //        {
+    //            Utility.WriteLog("Histori condition : hit service thermal success", "step-action");
+    //            foreach (var transaksi in jobResult.SelectToken("listTransaction").Select((transaksi) => (transaksi)))
+    //            {
+    //                trx.AddListThermal((string)transaksi.SelectToken("transactionId"), (string)transaksi.SelectToken("jenisTransaksi"), (string)transaksi.SelectToken("nominal"), (string)transaksi.SelectToken("keterangan"), (string)transaksi.SelectToken("kodeTransaksi"), (string)transaksi.SelectToken("tanggal"), (string)transaksi.SelectToken("securityCode"));
+    //            }
+    //            Utility.WriteLog("Histori condition : get list data success", "step-action");
+    //            tempjumlahtransaksi = trx._listthermal.Count;
+    //            isRead = false;
+    //            trx.AddTrail("GET DATA HISTORI", "", "SUCCESS");
+    //            await Task.Delay(100);
+    //            StateHasChanged();
+    //        }
+    //        else
+    //        {
+    //            Utility.WriteLog("Histori condition : hit service thermal failed", "step-action");
+    //            trx.AddTrail("GET DATA HISTORI", "NO DATA SEPULUH TERAKHIR", "FAILED");
+    //        }
+    //    }
+    //}
+
+    private async Task ServiceThermal()
+    {
+        string myJson = "{" +
+        "\"acct_no\":\"" + trx._AccountNumber + "\"" +
+        "}";
+        string myLink = config.Read("LINK", Config.PARAM_SERVICES_LINK);
+        string myUrl = myLink + config.Read("LINK", Config.PARAM_SERVICES_THERMAL);
+        //string myUrl = "http://172.18.136.207:6001/invoke/bri.core.services.v1:fiveMutation";
+        //trx._Nasabah[1] = myUrl.Substring(myUrl.Length - 15, 15);
+        Utility.WriteLog("Histori condition : get service start", "step-action");
+        try
+        {
+            string strResult = await HitServices.PostCallAPI(myUrl, myJson);
+            if (strResult != null)
+            {
+                JObject jobResult = JObject.Parse(strResult);
+                //trx.setTransaksiID((string)jobResult["transaction"].SelectToken("transactionId"));
+                //Utility.WriteLog("Histori condition : set transaksi ID " + trx._TransaksiID + " success", "step-action");
+
+                trx.setAccountNumber((string)jobResult["RESPONSE"].SelectToken("ACCT_NO"));
+
+                if ((string)jobResult["RESPONSE"].SelectToken("ERROR_CODE") == "DW-000" && (string)jobResult["RESPONSE"].SelectToken("RESPONSE_CODE") == "00")
+                {
+                    Utility.WriteLog("Histori condition : hit service thermal success", "step-action");
+                    foreach (var response in jobResult["RESPONSE"].SelectToken("DATA"))
+                    {
+                        trx.AddListThermal2((string)response.SelectToken("TRACCT"), (string)response.SelectToken("TRDATE"), (string)response.SelectToken("TRDATE2"), (string)response.SelectToken("TIMENT"), (string)response.SelectToken("DORC"), (string)response.SelectToken("AMT"), (string)response.SelectToken("TRREMK"));
+                    }
+                    Utility.WriteLog("Histori condition : get list data success", "step-action");
+                    tempjumlahtransaksi = trx._listthermal.Count;
+                    isRead = false;
+                    trx.AddTrail("GET DATA HISTORI", "", "SUCCESS");
+                    await Task.Delay(100);
+                    StateHasChanged();
+                }
+                else
+                {
+                    Utility.WriteLog("Histori condition : hit service thermal failed", "step-action");
+                    trx.AddTrail("GET DATA HISTORI", "NO DATA SEPULUH TERAKHIR", "FAILED");
+                    isRead = false;
+                    await Task.Delay(100);
+                    StateHasChanged();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            isError = true;
+            isRead = false;
+            await Task.Delay(100);
+            StateHasChanged();
+            await Task.Delay(2000);
+            isError = false;
+            await Task.Delay(100);
+            StateHasChanged();
+        }
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Console.WriteLine("2");
+            Utility.WriteLog("Histori condition : entered into history sepuluh terakhir", "step-action");
+            starttime = DateTime.Now;
+            await Task.Run(() => IdleTime());
+            if (isTime)
+            {
+                isTimeOut = true;
+                await Task.Delay(100);
+                StateHasChanged();
+                await Task.Delay(2000);
+                OnClick.InvokeAsync("home");
+            }
+        }
+    }
+
+    private async Task IdleTime()
+    {
+        do
+        {
+            span = DateTime.Now - starttime;
+            if (overtime > 0 && span.TotalMilliseconds > overtime)
+            {
+                isRead = false;
+                isTime = true;
+                isTimeOut = true;
+                break;
+            }
+        } while (isTimeOut == false);
+    }
+
+    private async Task ChangeIsTime()
+    {
+        isTime = !isTime;
+        await Task.Delay(100);
+        StateHasChanged();
+    }
+
+    private async Task AmbilKartu()
+    {
+        isTimeOut = true;
+        Utility.WriteLog("Histori condition : move to ambil kartu", "step-action");
+        OnClick.InvokeAsync("ambilkartu");
+    }
+
+    private async Task PilihHistori()
+    {
+        isTimeOut = true;
+        Utility.WriteLog("Histori condition : move to histori pilih menu", "step-action");
+        OnClick.InvokeAsync("historiPilih");
+    }
+
+    private async Task HistoriBerhasil()
+    {
+        isTimeOut = true;
+        isVisible = !isVisible;
+        await Task.Delay(100);
+        Utility.WriteLog("Histori condition : print thermal started", "step-action");
+        await print.PrintThermal(trx);
+        Utility.WriteLog("Histori condition : print thermal finished", "step-action");
+        Utility.WriteLog("Histori condition : move to histori berhasil", "step-action");
+        OnClick.InvokeAsync("historiberhasil");
+    }
+}

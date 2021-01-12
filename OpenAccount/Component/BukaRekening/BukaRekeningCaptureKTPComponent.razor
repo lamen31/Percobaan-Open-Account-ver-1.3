@@ -1,0 +1,123 @@
+﻿@using Microsoft.AspNetCore.Components
+@using OpenAccount.Data
+
+@inject IDScanner scanner
+
+<!-- ======= Hero Section ======= -->
+<section id="hero" style="margin-top: 50px;">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <span class="badge badge-primary" style="margin-bottom: 2rem; font-size: 20px;">Buka Rekening</span><br>
+                </div>
+                <h3 style="color: #00529C;">Silakan klik Capture untuk memfoto <br><b>e-KTP</b> Anda</h3>
+            </div>
+            <div class="col-xl-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                @if (isSpinner)
+                {
+                <div class="spinner-border text-danger" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                }
+                <!-- <img src="../assets/img/tick (2).png" style="width: 10%;"> //image sukses -->
+                <br>
+                <img src="../assets/img/ktp.png" class="img-fluid" alt="" style="margin-top: 5%; margin-bottom: 5%;"><br>
+                <button type="button" class="btn btn-primary" style="background-color: #F37024; font-weight: 100; padding: 8px 30px;" @onclick="CaptureBerhasil">Capture</button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+<!-- ======= Footer ======= -->
+<footer id="footer" class="fixed-bottom">
+    <div class="container" style="display: flex;">
+        <div class="col-xl-2 order-1 order-lg-1">
+            <button type="button" class="btn btn-primary" style="background-color: #4E4E4E;" @onclick="KTP">Kembali</button>
+        </div>
+        <div class="col-xl-8 order-2 order-lg-2">
+            <ol class="track-progressBR" style="margin-left: 0%; margin-bottom: 2%;">
+                <li class="done">
+                    <em>1</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>2</em>
+                    <!-- <span>T & C</span> -->
+                </li>
+                <li class="todo">
+                    <em>3</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="todo">
+                    <em>4</em>
+                    <!-- <span>Verification</span> -->
+                </li>
+                <li class="todo">
+                    <em>5</em>
+                    <!-- <span>Insert Money</span> -->
+                </li>
+                <li class="todo">
+                    <em>6</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>7</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>8</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>9</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>10</em>
+                    <!-- <span>Done</span> -->
+                </li>
+            </ol>
+        </div>
+        <div class="col-xl-2 order-3 order-lg-3">
+            <!-- <a href="insert-money.html"><button type="button" class="btn btn-primary" style="float: right;">Continue</button></a> -->
+        </div>
+    </div>
+</footer><!-- End Footer -->
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private string captureFile = "KTP";
+    private bool isSpinner = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Utility.WriteLog("Buka rekening condition : entered into buka rekening capture ktp", "step-action");
+        }
+    }
+
+    private async Task CaptureBerhasil()
+    {
+        isSpinner = true;
+        Utility.WriteLog("Buka rekening condition : id scanner scan ktp", "step-action");
+        scanner.ScanKTP(captureFile);
+        Utility.WriteLog("Buka rekening condition : move to buka rekening capture ktp berhasil", "step-action");
+        OnClick.InvokeAsync("bukarekeningcapturektpberhasil");
+    }
+
+    private async Task KTP()
+    {
+        //await Task.Delay(1000);
+        Utility.WriteLog("Buka rekening condition : id scanner return card", "step-action");
+        scanner.ReturnCard();
+        Utility.WriteLog("Buka rekening condition : id scanner close reader", "step-action");
+        scanner.CloseCVRReader();
+        Utility.WriteLog("Buka rekening condition : move to buka rekening ktp", "step-action");
+        OnClick.InvokeAsync("bukarekeningktp");
+    }
+}

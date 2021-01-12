@@ -1,0 +1,112 @@
+﻿@using Microsoft.AspNetCore.Components
+@using OpenAccount.Data
+
+@inject Utility utility 
+
+<!-- ======= Hero Section ======= -->
+<section id="hero" style="margin-top: 50px;">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <span class="badge badge-primary" style="margin-bottom: 2rem; font-size: 20px;">Buka Rekening</span><br>
+                </div>
+                <h3 style="color: #00529C;">Silakan <b>Tanda Tangan</b> sesuai e-KTP Anda pada bagian bawah mesin</h3>
+            </div>
+            <div class="col-xl-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                <h5 style="color: #fd1f1f; font-style: italic;">*Tanda tangan anda akan tampil disini</h5>
+                <div class="card mb-3" style="padding-left: 5%; padding-right: 5%; background-color: rgb(240, 240, 240);">
+                    <div class="text-center">
+                        <img class="card-img-top" src="../assets/signpad/imgsignpad.png" style="width: 50%;" alt="Card image cap">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Hasil Tanda Tangan</h5>
+                    </div>
+                </div>
+                <h5 style="color: #00529C; margin-top: 5%;" @onclick="TandaTangan">Ulangi Tanda Tangan?</h5>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+<!-- ======= Footer ======= -->
+<footer id="footer" class="fixed-bottom">
+    <div class="container" style="display: flex;">
+        <div class="col-xl-2 order-1 order-lg-1">
+            <button type="button" class="btn btn-primary" style="background-color: #4E4E4E;" @onclick="TandaTangan">Kembali</button>
+        </div>
+        <div class="col-xl-8 order-2 order-lg-2">
+            <ol class="track-progressBR" style="margin-left: 0%; margin-bottom: 2%;">
+                <li class="done">
+                    <em>1</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>2</em>
+                    <!-- <span>T & C</span> -->
+                </li>
+                <li class="done">
+                    <em>3</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>4</em>
+                    <!-- <span>Verification</span> -->
+                </li>
+                <li class="done">
+                    <em>5</em>
+                    <!-- <span>Insert Money</span> -->
+                </li>
+                <li class="done">
+                    <em>6</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>7</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>8</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>9</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>10</em>
+                    <!-- <span>Done</span> -->
+                </li>
+            </ol>
+        </div>
+        <div class="col-xl-2 order-3 order-lg-3">
+            <button type="button" class="btn btn-primary" style="float: right;" @onclick="TandaTangan2">Lanjut</button>
+        </div>
+    </div>
+</footer><!-- End Footer -->
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Utility.WriteLog("Buka rekening condition : entered into buka rekening tanda tangan konfirmasi", "step-action");
+        }
+    }
+
+    private async Task TandaTangan()
+    {
+        Utility.WriteLog("Buka rekening condition : move to buka rekening tanda tangan", "step-action");
+        OnClick.InvokeAsync("bukarekeningtandatangan");
+    }
+
+    private async Task TandaTangan2()
+    {
+        Utility.WriteLog("Buka rekening condition : move to buka rekening tanda tangan kedua", "step-action");
+        OnClick.InvokeAsync("bukarekeningtandatangankedua");
+    }
+}

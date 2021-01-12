@@ -1,0 +1,122 @@
+﻿@using Microsoft.AspNetCore.Components
+@using System
+@using System.IO  
+@using OpenAccount.Data
+
+@inject Utility utility 
+@inject Config config
+@inject SignPad sign
+
+<!-- ======= Hero Section ======= -->
+<section id="hero" style="margin-top: 50px;">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <span class="badge badge-primary" style="margin-bottom: 2rem; font-size: 20px;">Buka Rekening</span><br>
+                </div>
+                <h3 style="color: #00529C;">Silakan <b>Tanda Tangan</b> yang ke-2 kali</h3>
+            </div>
+            <div class="col-xl-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                <img src="../assets/img/Folder GIF/Signature.gif" class="img-fluid" alt=""><br>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+<!-- ======= Footer ======= -->
+<footer id="footer" class="fixed-bottom">
+    <div class="container" style="display: flex;">
+        <div class="col-xl-2 order-1 order-lg-1">
+            <button type="button" class="btn btn-primary" style="background-color: #4E4E4E;" @onclick="TandaTangan">Kembali</button>
+        </div>
+        <div class="col-xl-8 order-2 order-lg-2">
+            <ol class="track-progressBR" style="margin-left: 0%; margin-bottom: 2%;">
+                <li class="done">
+                    <em>1</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>2</em>
+                    <!-- <span>T & C</span> -->
+                </li>
+                <li class="done">
+                    <em>3</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>4</em>
+                    <!-- <span>Verification</span> -->
+                </li>
+                <li class="done">
+                    <em>5</em>
+                    <!-- <span>Insert Money</span> -->
+                </li>
+                <li class="done">
+                    <em>6</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>7</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>8</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>9</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>10</em>
+                    <!-- <span>Done</span> -->
+                </li>
+            </ol>
+        </div>
+        <div class="col-xl-2 order-3 order-lg-3">
+            <!-- <a href="insert-money.html"><button type="button" class="btn btn-primary" style="float: right;">Continue</button></a> -->
+        </div>
+    </div>
+</footer><!-- End Footer -->
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private string PathImage;
+    private string PathWorking;
+    private string path;
+    private bool flag = false;
+    private bool isVisible = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Utility.WriteLog("Buka rekening condition : entered into buka rekening tanda tangan kedua", "step-action");
+            Utility.WriteLog("Buka rekening condition : sign pad delete file second signature", "step-action");
+            sign.DeleteSign2();
+            Utility.WriteLog("Buka rekening condition : sign pad process start", "step-action");
+            await sign.signpad();
+            Utility.WriteLog("Buka rekening condition : sign pad process save image", "step-action");
+            sign.saveSign2();
+            Utility.WriteLog("Buka rekening condition : move to buka rekening tanda tangan kedua konfirmasi", "step-action");
+            OnClick.InvokeAsync("bukarekeningtandatangankeduakonfirmasi");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1000);
+    }
+
+    private async Task TandaTangan()
+    {
+        Utility.WriteLog("Buka rekening condition : sign pad process close", "step-action");
+        sign.CloseProcess();
+        Utility.WriteLog("Buka rekening condition : move to buka rekening tanda tangan", "step-action");
+        OnClick.InvokeAsync("bukarekeningtandatangan");
+    }
+}

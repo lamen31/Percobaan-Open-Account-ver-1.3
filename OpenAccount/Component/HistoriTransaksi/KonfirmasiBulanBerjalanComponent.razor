@@ -1,0 +1,543 @@
+﻿@using Microsoft.AspNetCore.Components
+@using OpenAccount.Data
+@using System.IO
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@inject Transaksi trx
+@inject Config config
+@inject Printer print
+@inject Utility utility
+@inject HitServices services
+@inject PrinterStatus printerstatus 
+<!-- ======= Hero Section ======= -->
+<section id="hero">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <span class="badge badge-primary" style="margin-bottom: 2rem; font-size: 20px;">Cetak Histori Transaksi</span><br>
+                    <teks>Hello, @trx.namaNasabah</teks>
+                    <h3 style="color: #00529C; margin-right: -2rem;">Anda akan Mencetak @jumlahtransaksi Histori Transaksi pada</h3><br>
+                    <div style="margin-top:5%;">
+                        <h3 style="color: #00529C;"><b>@jenisperiode</b></h3>
+                        <h3 style="color: #F15A23;"><b>@startdate s/d @enddate</b></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                <img src="../assets/img/printer.png" class="img-fluid" alt="" style="margin-top: 5%;">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+<!-- ======= Footer ======= -->
+<footer id="footer" class="fixed-bottom">
+    <div class="container" style="display: flex;">
+        <div class="col-xl-2 order-1 order-lg-1">
+            <button type="button" class="btn btn-primary" style="background-color: #4E4E4E;" @onclick="PilihHistori">Kembali</button>
+        </div>
+        <div class="col-xl-8 order-2 order-lg-2">
+            <ol class="track-progress" style="margin-left: 0%; margin-bottom: 2%;">
+                <li class="done">
+                    <em>1</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>2</em>
+                    <!-- <span>T & C</span> -->
+                </li>
+                <li class="done">
+                    <em>3</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>4</em>
+                    <!-- <span>Verification</span> -->
+                </li>
+                <li class="todo">
+                    <em>5</em>
+                    <!-- <span>Insert Money</span> -->
+                </li>
+            </ol>
+        </div>
+        <div class="col-xl-2 order-3 order-lg-3">
+            <button type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" @onclick="HistoriBerhasil">Cetak</button>
+        </div>
+    </div>
+</footer><!-- End Footer -->
+
+@if (isVisible)
+{
+    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">Mohon tunggu,</h3>
+                        <h5 style="font-style:italic;">Sedang dalam proses...</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isNoTransaksi)
+{
+    <div class="modal" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">Tidak ada transaksi pada periode ini.</h3>
+                        <h5 style="font-style:italic;">Tekan <b>Kembali</b> untuk ke menu utama</h5>
+                        <button type="button" class="btn btn-primary" style="text-align:center; margin-top: 5%;" data-toggle="modal" data-target="#exampleModalCenter" @onclick="AmbilKartu">Kembali</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isRead)
+{
+    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">Mohon tunggu,</h3>
+                        <h5 style="font-style:italic;">Sistem sedang membaca data tabungan anda</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isTime)
+{
+    <div class="modal" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">MAAF,</h3>
+                        <h5 style="font-style:italic;">Waktu Anda Telah Habis!</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private bool isVisible = false;
+    private bool isBaris = false;
+    private bool isNoTransaksi = false;
+    private bool isRead = false;
+    private string noRek = string.Empty;
+    private string jenisperiode = "Periode Bulan Berjalan";
+    private string startdate;
+    private string enddate;
+    private string hourdate;
+    private string path;
+    private string[] lines;
+    private string[] uraian;
+    private string[] tipe;
+    private string[] nominal;
+    private string jumlahtransaksi;
+    private int tempjumlahtransaksi;
+    private int sisatransaksi;
+    private string saldo;
+    private string statusPrinter;
+    private TimeSpan span;
+    private int overtime = 180000;
+    private bool isTimeOut = false;
+    private bool isTime = false;
+    private DateTime starttime;
+
+    protected override async Task OnInitializedAsync()
+    {
+        startdate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("yyyy-MM-dd");
+        enddate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy-MM-dd");
+
+        //startdate = "2020-09-01";
+        //enddate = "2020-09-30";
+
+        hourdate = DateTime.Now.ToString("HH:mm:ss");
+        //trx.setHistoriTransaksi(jenisperiode, startdate, enddate, hourdate);
+
+        Console.WriteLine("1");
+        await Task.Delay(500);
+        isRead = true;
+        await Task.Delay(100);
+        StateHasChanged();
+        Utility.WriteLog("Histori condition : hit service histori start", "step-action");
+        await ServiceHistori();
+
+        //path = config.Read("PATH", Config.PARAM_PATH_A4);
+        //lines = File.ReadAllLines(path);
+        //jumlahtransaksi = lines.Length.ToString();
+        //uraian = new string[lines.Length];
+        //tipe = new string[lines.Length];
+        //nominal = new string[lines.Length];
+        //for (int i = 0; i < lines.Length; i++)
+        //{
+        //    string[] column = lines[i].Split(";");
+        //    for (int j = 0; j < column.Length; j++)
+        //    {
+        //        if (j == 0)
+        //            uraian[i] = column[j];
+        //        else if (j == 1)
+        //            tipe[i] = column[j];
+        //        else if (j == 2)
+        //            nominal[i] = column[j];
+        //    }
+        //}
+        //Console.WriteLine("INPUT DATA SUCCESS");
+        //Utility.WriteLog("Histori condition : input data from " + path + " success", "step-action");
+        saldo = config.Read("NASABAH", Config.PARAM_SALDO_NASABAH);
+        jumlahtransaksi = tempjumlahtransaksi.ToString();
+        //trx.setDataHistoriTransaksi(jumlahtransaksi, uraian, tipe, nominal, saldo);
+        trx.setHistori(jenisperiode, startdate, enddate, jumlahtransaksi, saldo);
+        Utility.WriteLog("Histori condition : set data histori success", "step-action");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Utility.WriteLog("Histori condition : entered into history bulan berjalan", "step-action");
+            starttime = DateTime.Now;
+            await Task.Run(() => IdleTime());
+            if (isTime)
+            {
+                isTimeOut = true;
+                await Task.Delay(100);
+                StateHasChanged();
+                await Task.Delay(2000);
+                OnClick.InvokeAsync("home");
+            }
+        }
+    }
+
+    private async Task IdleTime()
+    {
+        do
+        {
+            span = DateTime.Now - starttime;
+            if (overtime > 0 && span.TotalMilliseconds > overtime)
+            {
+                isRead = false;
+                isTime = true;
+                isTimeOut = true;
+                break;
+            }
+        } while (isTimeOut == false);
+    }
+
+    private async Task ChangeIsTime()
+    {
+        isTime = !isTime;
+        await Task.Delay(100);
+        StateHasChanged();
+    }
+
+    //private async Task ServiceHistori()
+    //{
+    //    trx.clearListHistori();
+    //    Utility.WriteLog("Histori condition : clear list histori success", "step-action");
+    //    string myJson = "{" +
+    //    "\"noRekening\":\"" + trx._Nasabah[1] + "\"," +
+    //    "\"tanggalAwal\":\"" + startdate + "\"," +
+    //    "\"tanggalAkhir\":\"" + enddate + "\"" +
+    //    "}";
+    //    string myLink = config.Read("LINK", Config.PARAM_SERVICES_LINK);
+    //    string myUrl = myLink + config.Read("LINK", Config.PARAM_SERVICES_POST_HISTORI);
+    //    Utility.WriteLog("Histori condition : post service start", "step-action");
+    //    string strResult = await HitServices.PostCallAPI(myUrl, myJson);
+    //    if (strResult != null)
+    //    {
+    //        JObject jobResult = JObject.Parse(strResult);
+    //        trx.setTransaksiID((string)jobResult["transaction"].SelectToken("transactionId"));
+    //        Utility.WriteLog("Histori condition : set transaksi ID " + trx._TransaksiID + " success", "step-action");
+
+    //        if ((string)jobResult["transaction"].SelectToken("responseCode") == "0000")
+    //        {
+    //            Utility.WriteLog("Histori condition : hit service histori success", "step-action");
+    //            foreach (var transaksi in jobResult.SelectToken("listTransaction").Select((transaksi) => (transaksi)))
+    //            {
+    //                trx.AddListHistori((string)transaksi.SelectToken("transactionId"), (string)transaksi.SelectToken("jenisTransaksi"), (string)transaksi.SelectToken("nominal"), (string)transaksi.SelectToken("keterangan"), (string)transaksi.SelectToken("kodeTransaksi"), (string)transaksi.SelectToken("tanggal"), (string)transaksi.SelectToken("securityCode"));
+    //            }
+    //            Utility.WriteLog("Histori condition : get list data success", "step-action");
+    //            tempjumlahtransaksi = trx._listhistori.Count;
+    //            isRead = false;
+    //            trx.AddTrail("GET DATA HISTORI", "", "SUCCESS");
+    //            await Task.Delay(100);
+    //            StateHasChanged();
+    //        }
+    //        else if ((string)jobResult["transaction"].SelectToken("responseCode") == "0001")
+    //        {
+    //            Utility.WriteLog("Histori condition : data empty", "step-action");
+    //            tempjumlahtransaksi = 0;
+    //            isRead = false;
+    //            isNoTransaksi = true;
+    //            trx.AddTrail("GET DATA HISTORI", "NO DATA BULAN BERJALAN", "FAILED");
+    //            await Task.Delay(100);
+    //            StateHasChanged();
+    //        }
+    //    }
+    //}
+
+    private async Task ServiceHistori()
+    {
+        trx.clearListHistori();
+        Utility.WriteLog("Histori condition : clear list histori success", "step-action");
+        string myJson = "\"REQUEST\":\"" + "{" +
+        "\"ACCT_NO\":\"" + trx._AccountNumber + "\"," +
+        "\"START_DATE\":\"" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("yyyyMMdd") + "\"," +
+        "\"END_DATE\":\"" + new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyyMMdd") + "\"" +
+        "}";
+        string myLink = config.Read("LINK", Config.PARAM_SERVICES_LINK);
+        string myUrl = myLink + config.Read("LINK", Config.PARAM_SERVICES_POST_HISTORI);
+        Utility.WriteLog("Histori condition : post service start", "step-action");
+        string strResult = await HitServices.PostCallAPI(myUrl, myJson);
+        if (strResult != null)
+        {
+            JObject jobResult = JObject.Parse(strResult);
+            //trx.setTransaksiID((string)jobResult["transaction"].SelectToken("transactionId"));
+            //Utility.WriteLog("Histori condition : set transaksi ID " + trx._TransaksiID + " success", "step-action");
+
+            trx.setAccountNumber((string)jobResult["RESPONSE"].SelectToken("ACCT_NO"));
+
+            if ((string)jobResult["RESPONSE"].SelectToken("ERROR_CODE") == "DW-000" && (string)jobResult["RESPONSE"].SelectToken("RESPONSE_CODE") == "00")
+            {
+                Utility.WriteLog("Histori condition : hit service histori success", "step-action");
+                foreach (var response in jobResult.SelectToken("listTransaction").Select((response) => (response)))
+                {
+                    trx.AddListHistori2((string)response.SelectToken("SEQ"), (string)response.SelectToken("ID_NUM"), (string)response.SelectToken("ID_NUM_2"), (string)response.SelectToken("ID_NUM_3"), (string)response.SelectToken("NO_REK"),
+                        (string)response.SelectToken("TGL_TRAN"), (string)response.SelectToken("TGL_EFEKTIF"), (string)response.SelectToken("JAM_TRAN"), (string)response.SelectToken("KODE_TRAN"), (string)response.SelectToken("DESK_TRAN"),
+                        (string)response.SelectToken("SALDO_AWAL_MUTASI"), (string)response.SelectToken("MUTASI_DEBET"), (string)response.SelectToken("MUTASI_KREDIT"), (string)response.SelectToken("SALDO_AKHIR_MUTASI"), (string)response.SelectToken("TRUSER"),
+                        (string)response.SelectToken("GLSIGN"), (string)response.SelectToken("TERBILANG"), (string)response.SelectToken("TRREMK"), (string)response.SelectToken("AUXTRC"), (string)response.SelectToken("SERIAL"), (string)response.SelectToken("TLBDS1"), 
+                        (string)response.SelectToken("TLBDS2"));
+                }
+                Utility.WriteLog("Histori condition : get list data success", "step-action");
+                tempjumlahtransaksi = trx._listhistori.Count;
+                isRead = false;
+                trx.AddTrail("GET DATA HISTORI", "", "SUCCESS");
+                await Task.Delay(100);
+                StateHasChanged();
+            }
+            else if ((string)jobResult["transaction"].SelectToken("responseCode") == "0001")
+            {
+                Utility.WriteLog("Histori condition : data empty", "step-action");
+                tempjumlahtransaksi = 0;
+                isRead = false;
+                isNoTransaksi = true;
+                trx.AddTrail("GET DATA HISTORI", "NO DATA BULAN BERJALAN", "FAILED");
+                await Task.Delay(100);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task HistoriBerhasil()
+    {
+        isTimeOut = true;
+        isVisible = !isVisible;
+        await Task.Delay(100);
+        StateHasChanged();
+        Utility.WriteLog("Histori condition : modal visible appear", "step-action");
+
+        int maxbaris = 12;
+        int totalbaris = trx._listhistori.Count;
+        int halaman;
+        int maxhalaman;
+        if (totalbaris > maxbaris)
+        {
+            int n = totalbaris / maxbaris;
+            string[] tempuraian = null;
+            string[] temptipe = null;
+            string[] tempnominal = null;
+            int startindex = 0;
+            if (totalbaris % maxbaris > 0)
+            {
+                n += 1;
+            }
+            maxhalaman = n;
+            trx.setMaxHalamanHistoriTransaksi(maxhalaman.ToString());
+            //tempuraian = new string[trx._HistoriUraian.Length];
+            //temptipe = new string[trx._HistoriTipe.Length];
+            //tempnominal = new string[trx._HistoriNominal.Length];
+            //Array.Copy(trx._HistoriUraian, startindex, tempuraian, 0, trx._HistoriUraian.Length);
+            //Array.Copy(trx._HistoriTipe, startindex, temptipe, 0, trx._HistoriTipe.Length);
+            //Array.Copy(trx._HistoriNominal, startindex, tempnominal, 0, trx._HistoriNominal.Length);
+            List<Transaksi.HistoriTransaksi> tempList = new List<Transaksi.HistoriTransaksi>();
+            Utility.WriteLog("Histori condition : temporary list created", "step-action");
+            foreach (var histori in trx._listhistori)
+            {
+                tempList.Add(histori);
+            }
+            halaman = 1;
+            sisatransaksi = totalbaris;
+            int tempmaxbaris = maxbaris;
+            for (int i = 0; i < n; i++)
+            {
+                string TransactionID = string.Empty;
+                string JenisTransaksi = string.Empty;
+                string Nominal = string.Empty;
+                string Keterangan = string.Empty;
+                string KodeTransaksi = string.Empty;
+                string Tanggal = string.Empty;
+                string SecurityCode = string.Empty;
+
+                uraian = null;
+                tipe = null;
+                nominal = null;
+
+                if (i == n - 1)
+                {
+                    trx.clearListHistori();
+                    Utility.WriteLog("Histori condition : clear list histori success", "step-action");
+                    int sisabaris = tempList.Count - startindex;
+                    //uraian = new string[sisabaris];
+                    //tipe = new string[sisabaris];
+                    //nominal = new string[sisabaris];
+                    //Array.Copy(tempuraian, startindex, uraian, 0, sisabaris);
+                    //Array.Copy(temptipe, startindex, tipe, 0, sisabaris);
+                    //Array.Copy(tempnominal, startindex, nominal, 0, sisabaris);
+                    for (int j = startindex; j < tempList.Count; j++)
+                    {
+                        trx.AddListHistori(tempList[j]._TransactionID, tempList[j]._JenisTransaksi, tempList[j]._Nominal, tempList[j]._Keterangan, tempList[j]._KodeTransaksi, tempList[j]._Tanggal, tempList[j]._SecurityCode);
+                    }
+                    //trx.setHistoriTransaksi(uraian, tipe, nominal, halaman.ToString());
+                    trx.setHalamanHistori(halaman.ToString());
+                    Utility.WriteLog("Histori condition : print halaman ke-" + halaman.ToString(), "step-action");
+                    saldo = await Task.Run(() => print.PrintHistori(trx));
+                    statusPrinter = printerstatus.StatusCode.ToString();
+                    if (statusPrinter != "0")
+                    {
+                        Utility.WriteLog("Histori condition : print history halaman ke-" + halaman.ToString() + " failed", "step-action");
+                        Utility.WriteLog("Histori condition : move to histori gagal", "step-action");
+                        OnClick.InvokeAsync("historigagal");
+                        break;
+                    }
+                    Utility.WriteLog("Histori condition : print history halaman ke-" + halaman.ToString() + " success", "step-action");
+                    await Task.Delay(21000);
+                    //await Task.Delay(8000);
+                    isVisible = false;
+                    await Task.Delay(100);
+                    StateHasChanged();
+                    Utility.WriteLog("Histori condition : move to histori berhasil", "step-action");
+                    OnClick.InvokeAsync("historiberhasil");
+                    break;
+                }
+                else
+                {
+                    trx.clearListHistori();
+                    Utility.WriteLog("Histori condition : clear list histori success", "step-action");
+                    //uraian = new string[maxbaris];
+                    //tipe = new string[maxbaris];
+                    //nominal = new string[maxbaris];
+                    //Array.Copy(tempuraian, startindex, uraian, 0, maxbaris);
+                    //Array.Copy(temptipe, startindex, tipe, 0, maxbaris);
+                    //Array.Copy(tempnominal, startindex, nominal, 0, maxbaris);
+                    for (int j = startindex; j < tempmaxbaris; j++)
+                    {
+                        trx.AddListHistori(tempList[j]._TransactionID, tempList[j]._JenisTransaksi, tempList[j]._Nominal, tempList[j]._Keterangan, tempList[j]._KodeTransaksi, tempList[j]._Tanggal, tempList[j]._SecurityCode);
+                    }
+                    //trx.setHistoriTransaksi(uraian, tipe, nominal, halaman.ToString());
+                    trx.setHalamanHistori(halaman.ToString());
+                    Utility.WriteLog("Histori condition : print halaman ke-" + halaman.ToString(), "step-action");
+                    saldo = await Task.Run(() => print.PrintHistori(trx));
+                    statusPrinter = printerstatus.StatusCode.ToString();
+                    if (statusPrinter != "0")
+                    {
+                        Utility.WriteLog("Histori condition : print history halaman ke-" + halaman.ToString() + " failed", "step-action");
+                        Utility.WriteLog("Histori condition : move to histori gagal", "step-action");
+                        OnClick.InvokeAsync("historigagal");
+                        break;
+                    }
+                    Utility.WriteLog("Histori condition : print history halaman ke-" + halaman.ToString() + " success", "step-action");
+                    startindex += maxbaris;
+                    tempmaxbaris += maxbaris;
+                    halaman += 1;
+                    maxhalaman -= 1;
+                    sisatransaksi -= maxbaris;
+                    //await Task.Delay(8000);
+                }
+                //isVisible = false;
+                //if (maxhalaman >= 1)
+                //{
+                //    isBaris = !isBaris;
+                //    StateHasChanged();
+                //    do
+                //    {
+                //        await Task.Delay(100);
+                //    } while (isBaris);
+                //}
+            }
+        }
+        else if (totalbaris < maxbaris)
+        {
+            halaman = 1;
+            maxhalaman = 1;
+            trx.setHalamanHistori(halaman.ToString());
+            trx.setMaxHalamanHistoriTransaksi(maxhalaman.ToString());
+            Utility.WriteLog("Histori condition : print history", "step-action");
+            saldo = await Task.Run(() => print.PrintHistori(trx));
+            statusPrinter = printerstatus.StatusCode.ToString();
+            if (statusPrinter != "0")
+            {
+                Utility.WriteLog("Histori condition : print history failed", "step-action");
+                Utility.WriteLog("Histori condition : move to histori gagal", "step-action");
+                OnClick.InvokeAsync("historigagal");
+            }
+            Utility.WriteLog("Histori condition : print history success", "step-action");
+            await Task.Delay(19000);
+            Utility.WriteLog("Histori condition : move to histori berhasil", "step-action");
+            OnClick.InvokeAsync("historiberhasil");
+        }
+    }
+
+    private async Task PilihHistori()
+    {
+        isTimeOut = true;
+        Utility.WriteLog("Histori condition : move to histori pilih menu", "step-action");
+        OnClick.InvokeAsync("historiPilih");
+    }
+
+    private async Task AmbilKartu()
+    {
+        isTimeOut = true;
+        Utility.WriteLog("Histori condition : move to ambil kartu", "step-action");
+        OnClick.InvokeAsync("ambilkartu");
+    }
+}

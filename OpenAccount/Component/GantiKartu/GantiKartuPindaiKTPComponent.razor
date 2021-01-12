@@ -1,0 +1,341 @@
+﻿@using Microsoft.AspNetCore.Components
+@using OpenAccount.Data
+
+@inject IDScanner scanner
+@inject Utility utility
+@inject EKtp ktp
+@inject Transaksi trx
+<!-- ======= Hero Section ======= -->
+<section id="hero" style="margin-top: 50px;">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <span class="badge badge-primary" style="margin-bottom: 2rem; font-size: 20px;">Ganti Kartu</span><br>
+                </div>
+                <h3 style="color: #00529C;">Tekan <b>Pindai</b> Kemudian Masukkan <b>e-KTP</b> Anda pada alat pemindai</h3>
+            </div>
+            <div class="col-xl-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                <!-- <img src="../assets/img/tick (2).png" style="width: 10%;"> //image sukses -->
+                <br>
+                <img src="../assets/img/Folder GIF/insert-ktp3.gif" class="img-fluid" alt=""><br>
+                <button type="button" class="btn btn-primary" style="background-color: #F37024; font-weight: 100; padding: 8px 30px;" @onclick="PindaiKTP">Pindai</button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+<!-- ======= Footer ======= -->
+<footer id="footer" class="fixed-bottom">
+    <div class="container" style="display: flex;">
+        <div class="col-xl-2 order-1 order-lg-1">
+            @if (!isBaca)
+            {
+                <button type="button" class="btn btn-primary" style="background-color: #4E4E4E;" @onclick="Rekening">Kembali</button>
+            }
+        </div>
+        <div class="col-xl-8 order-2 order-lg-2">
+            <ol class="track-progressGK" style="margin-left: 0%; margin-bottom: 2%;">
+                <li class="done">
+                    <em>1</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>2</em>
+                    <!-- <span>T & C</span> -->
+                </li>
+                <li class="todo">
+                    <em>3</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="todo">
+                    <em>4</em>
+                    <!-- <span>Verification</span> -->
+                </li>
+                <li class="todo">
+                    <em>5</em>
+                    <!-- <span>Insert Money</span> -->
+                </li>
+            </ol>
+        </div>
+        <div class="col-xl-2 order-3 order-lg-3">
+            <!-- <a href="insert-money.html"><button type="button" class="btn btn-primary" style="float: right;">Continue</button></a> -->
+        </div>
+    </div>
+</footer><!-- End Footer -->
+
+@if (isBaca)
+{
+    <div class="modal" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">Mohon Menunggu...</h3>
+                        <h5 style="font-style:italic;">Proses pindai KTP sedang berlangsung</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isKTPNotValid)
+{
+    <div class="modal" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">KTP Anda <b style="color: #af0000;">TIDAK VALID</b></h3>
+                        <h5 style="font-style:italic;">Silahkan Masukan KTP yang Valid Kemudian Tekan <b>Pindai</b></h5>
+                        <div>
+                            <button type="button" class="btn btn-primary" style="text-align:center; margin-top: 5%;" data-toggle="modal" data-target="#exampleModalCenter" @onclick="Change">Pindai</button>
+                        </div>
+                        <p style="color: #ff0000; font-size: 20px; font-style:italic">Kesempatan mencoba @TryLimit.ToString()x lagi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isTime)
+{
+    <div class="modal" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">Waktu Habis</h3>
+                        <h5 style="font-style:italic;">Apakah Anda Ingin Melanjutkan Proses?</h5>
+                        <div>
+                            <button type="button" class="btn btn-primary" style="text-align:center; margin-top: 5%;" data-toggle="modal" data-target="#exampleModalCenter" @onclick="ChangeIsTime">YA</button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" style="text-align:center; margin-top: 2%;" data-toggle="modal" data-target="#exampleModalCenter" @onclick="Home">TIDAK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private bool isBaca = false;
+    private bool isSpinner = false;
+    private bool isKTPValid = true;
+    private bool isKTPNotValid = false;
+    private bool isPindaiKTP = false;
+    private TimeSpan span;
+    private int overtime = 180000;
+    private bool isTimeOut = false;
+    private bool isTime = false;
+    private bool isKTPSuccess = false;
+    private bool isLoopKTP = false;
+    private int TryLimit = 2;
+    private DateTime starttime;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            trx.clearKTP();
+            ktp.clear();
+
+            Utility.WriteLog("Ganti kartu condition : entered into ganti kartu pindai ktp", "step-action");
+            //starttime = DateTime.Now;
+            //await Task.Run(() => IdleTime());
+            //if (isTime)
+            //{
+            //    await Task.Delay(100);
+            //    StateHasChanged();
+            //}
+        }
+    }
+
+    private async Task IdleTime()
+    {
+        do
+        {
+            span = DateTime.Now - starttime;
+            if (overtime > 0 && span.TotalMilliseconds > overtime)
+            {
+                isTime = true;
+                isTimeOut = true;
+                break;
+            }
+        } while (isTimeOut == false);
+    }
+
+    private async Task ChangeIsTime()
+    {
+        isTime = !isTime;
+        await Task.Delay(100);
+        StateHasChanged();
+    }
+
+    private async Task Home()
+    {
+        isTimeOut = true;
+        Utility.WriteLog("Ganti kartu condition : move to home", "step-action");
+        OnClick.InvokeAsync("home");
+    }
+
+    private async Task PindaiKTP()
+    {
+        isLoopKTP = true;
+        do
+        {
+            isTimeOut = true;
+            isPindaiKTP = true;
+            await Task.Delay(100);
+            StateHasChanged();
+            await Task.Delay(100);
+            Utility.WriteLog("Ganti kartu condition : id scanner front swallow", "step-action");
+            await scanner.FrontSwallow();
+            isSpinner = scanner.test;
+            //isSpinner = true;
+            if (!isSpinner)
+            {
+                return;
+            }
+            else
+            {
+                isBaca = true;
+                await Task.Delay(100);
+                StateHasChanged();
+                await Task.Delay(100);
+                Utility.WriteLog("Ganti kartu condition : EKTP reader initialize", "step-action");
+                ktp.EKtpInitialize();
+                try
+                {
+                    await Task.Delay(500);
+                    Utility.WriteLog("Ganti kartu condition : EKTP reader read data", "step-action");
+                    isKTPValid = ktp.EKtpReader();
+                    trx.setMinutiae(ktp.minutiae1, ktp.minutiae2);
+                    Utility.WriteLog("Ganti kartu condition : set minutiae 1 and minutiae 2 success", "step-action");
+                    await Task.Delay(100);
+                    //ktp.ReadBio();
+                    //trx.setDataKTP(ktp.NIK, ktp.Nama, ktp.TempatLahir, ktp.TanggalLahir, ktp.Alamat, ktp.RT, ktp.RW, ktp.Kecamatan,
+                    //    ktp.Kelurahan, ktp.Kabupaten, ktp.JenisKelamin, ktp.GolonganDarah, ktp.Agama, ktp.StatusPerkawinan,
+                    //    ktp.Pekerjaan, ktp.Kewarganegaraan);
+                    //await Task.Delay(100);
+                    //Utility.WriteLog("Ganti kartu condition : id scanner back swallow", "step-action");
+                    //scanner.BackPos();
+                    CheckKTPValid();
+                }
+                catch
+                {
+                    Utility.WriteLog("Ganti kartu condition : EKTP reader cannot read data", "step-action");
+                    isKTPNotValid = true;
+                    await Task.Delay(100);
+                    StateHasChanged();
+                    Utility.WriteLog("Ganti kartu condition : id scanner return card", "step-action");
+                    scanner.ReturnCard();
+                    await Task.Delay(100);
+                    Utility.WriteLog("Ganti kartu condition : id scanner close reader", "step-action");
+                    scanner.CloseCVRReader();
+                }
+                if (isKTPNotValid)
+                    TryLimit -= 1;
+                else
+                    break;
+                do
+                {
+                    if (TryLimit == 0)
+                    {
+                        isLoopKTP = false;
+                        isKTPNotValid = false;
+                        Utility.WriteLog("Ganti kartu condition : move to home", "step-action");
+                        OnClick.InvokeAsync("home");
+                    }
+                    else
+                        await Task.Delay(100);
+                } while (isKTPNotValid);
+            }
+        } while (isLoopKTP);
+        if (isKTPSuccess)
+        {
+            Utility.WriteLog("Ganti kartu condition : move to ganti kartu pindai ktp berhasil", "step-action");
+            OnClick.InvokeAsync("gantikartupindaiktpberhasil");
+        }
+    }
+
+    private async Task Change()
+    {
+        isKTPNotValid = false;
+        await Task.Delay(100);
+    }
+
+    private async Task CheckKTPValid()
+    {
+        if (isKTPValid)
+        {
+            isLoopKTP = false;
+            isKTPSuccess = true;
+            //Utility.WriteLog("Ganti kartu condition : id scanner radio pos", "step-action");
+            //scanner.RadioPos();
+            //await Task.Delay(2000);
+            ktp.ReadBio();
+            trx.setDataKTP(ktp.NIK, ktp.Nama, ktp.TempatLahir, ktp.TanggalLahir, ktp.Alamat, ktp.RT, ktp.RW, ktp.Kecamatan,
+                ktp.Kelurahan, ktp.Kabupaten, ktp.JenisKelamin, ktp.GolonganDarah, ktp.Agama, ktp.StatusPerkawinan,
+                ktp.Pekerjaan, ktp.Kewarganegaraan);
+            await Task.Delay(100);
+        }
+        else
+        {
+            isKTPNotValid = true;
+            await Task.Delay(100);
+            StateHasChanged();
+            await Task.Delay(100);
+            Utility.WriteLog("Ganti kartu condition : id scanner return card", "step-action");
+            scanner.ReturnCard();
+            await Task.Delay(100);
+            Utility.WriteLog("Ganti kartu condition : id scanner close reader", "step-action");
+            scanner.CloseCVRReader();
+        }
+    }
+
+    private async Task Rekening()
+    {
+        isTimeOut = true;
+        scanner.isManualStop = true;
+        if (isPindaiKTP)
+        {
+            await Task.Delay(100);
+            Utility.WriteLog("Ganti kartu condition : id scanner close reader", "step-action");
+            scanner.CloseCVRReader();
+            isLoopKTP = false;
+            Utility.WriteLog("Ganti kartu condition : move to ganti kartu input rekening", "step-action");
+            OnClick.InvokeAsync("gantikartu");
+            return;
+        }
+        else if (!isPindaiKTP)
+        {
+            isLoopKTP = false;
+            Utility.WriteLog("Ganti kartu condition : move to ganti kartu input rekening", "step-action");
+            OnClick.InvokeAsync("gantikartu");
+        }
+    }
+}

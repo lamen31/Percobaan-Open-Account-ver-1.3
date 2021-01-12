@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Components
+@using OpenAccount.Data
+
+@inject Utility utility
+<!-- ======= Hero Section ======= -->
+<section id="hero">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <teks style="color: #FF0000; font-weight: 900;">Mohon Maaf,</teks>
+                    <h3 style="margin-top: 5%; font-size: 25px; font-weight: 600; line-height: 40px;">
+                        Kartu Anda Telah Terblokir
+                    </h3>
+                    <h3 style="color: #00529C; margin-top: 10%; font-size: 25px; line-height: 40px;">"Harap menghubungi <b>Customer Service</b><br> untuk info lebih lanjut"</h3>
+                </div>
+            </div>
+            <div class="col-xl-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                <img src="../assets/img/KartuTerblokir.png" class="img-fluid" alt="" style="margin-top: 5%;">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Utility.WriteLog("Blokir kartu condition : entered into blokir kartu", "step-action");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(10000);
+        Utility.WriteLog("Blokir kartu condition : move to landing page", "step-action");
+        OnClick.InvokeAsync("default");
+    }
+}

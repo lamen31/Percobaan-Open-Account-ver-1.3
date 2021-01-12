@@ -1,0 +1,605 @@
+﻿@page "/"
+
+@using OpenAccount.Component
+@using OpenAccount.Component.HistoriTransaksi
+@using OpenAccount.Component.BukuTabungan
+@using OpenAccount.Component.BukaRekening
+@using OpenAccount.Component.GantiKartu
+@using OpenAccount.Component.GantiPin
+@using OpenAccount.Data
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@inject Transaksi trx
+@inject TransaksiBaru trxbaru
+@inject Reports report
+@inject Config config
+
+<div class="wrapper">
+    <div class="main-panel">
+        <!-- ======= Header ======= -->
+        <header id="header" class="fixed-top">
+            <div class="container d-flex">
+
+                <div class="logo mr-auto">
+                    <img src="../assets/img/Logo-Bank-BRI.png">
+                </div>
+
+                <div class="justify-content-center" style="margin-top: -1%; margin-right: 18%;">
+                    <div class="container">
+                        <form class="toggle">
+                            <input @onclick="LangChange" type="radio" id="choice1" name="choice" value="creative">
+                            <label for="choice1">EN</label>
+
+                            <input @onclick="LangChange" type="radio" id="choice2" name="choice" value="productive">
+                            <label for="choice2">ID</label>
+                            <div id="flap"><span class="content">@language</span></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="header-social-links">
+                    <div class="clock-container">
+                        <div class="clock-col">
+                            <p class="clock-day clock-timer">
+                            </p>
+                            <p class="clock-label">
+                                Day
+                            </p>
+                        </div>
+                        <!-- <div class="clock-col">
+                          <p id="date" class="clock-timer">
+                          </p>
+                        </div> -->
+                        <div class="clock-col">
+                            <p class="clock-hours clock-timer">
+                            </p>
+                            <p class="clock-label">
+                                Hours
+                            </p>
+                        </div>
+                        <div class="clock-col">
+                            <p class="clock-minutes clock-timer">
+                            </p>
+                            <p class="clock-label">
+                                Minutes
+                            </p>
+                        </div>
+                        <div class="clock-col">
+                            <p class="clock-seconds clock-timer">
+                            </p>
+                            <p class="clock-label">
+                                Seconds
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        @switch (message)
+        {
+            case "gantipin":
+                {
+                    <GantiPinComponent OnClick="ClickHandler"></GantiPinComponent>
+                    break;
+                }
+            case "gantipininputpin":
+                {
+                    <GantiPinInputPinComponent OnClick="ClickHandler"></GantiPinInputPinComponent>
+                    break;
+                }
+            case "gantipininputpinbaru":
+                {
+                    <GantiPinInputPinBaruComponent OnClick="ClickHandler"></GantiPinInputPinBaruComponent>
+                    break;
+                }
+            case "gantipininputpinkonfirmasi":
+                {
+                    <GantiPinInputPinKonfirmasiComponent OnClick="ClickHandler"></GantiPinInputPinKonfirmasiComponent>
+                    break;
+                }
+            case "gantipinsukses":
+                {
+                    <GantiPinSuksesComponent OnClick="ClickHandler"></GantiPinSuksesComponent>
+                    break;
+                }
+            case "gantikartu":
+                {
+                    <GantiKartuComponent OnClick="ClickHandler"></GantiKartuComponent>
+                    break;
+                }
+            case "gantikartupindaiktp":
+                {
+                    <GantiKartuPindaiKTPComponent OnClick="ClickHandler"></GantiKartuPindaiKTPComponent>
+                    break;
+                }
+            case "gantikartupindaiktpberhasil":
+                {
+                    <GantiKartuPindaiKTPBerhasilComponent OnClick="ClickHandler"></GantiKartuPindaiKTPBerhasilComponent>
+                    break;
+                }
+            case "gantikartufinger":
+                {
+                    <GantiKartuFingerComponent OnClick="ClickHandler"></GantiKartuFingerComponent>
+                    break;
+                }
+            case "gantikartufingerberhasil":
+                {
+                    <GantiKartuFingerBerhasilComponent OnClick="ClickHandler"></GantiKartuFingerBerhasilComponent>
+                    break;
+                }
+            case "gantikartukonfirmasidata":
+                {
+                    <GantiKartuKonfirmasiDataComponent OnClick="ClickHandler"></GantiKartuKonfirmasiDataComponent>
+                    break;
+                }
+            case "gantikartuberhasil":
+                {
+                    <GantiKartuBerhasilComponent OnClick="ClickHandler"></GantiKartuBerhasilComponent>
+                    break;
+                }
+            case "bukarekening":
+                {
+                    <BukaRekeningComponent OnClick="ClickHandler"></BukaRekeningComponent>
+                    break;
+                }
+            case "bukarekeningktp":
+                {
+                    <BukaRekeningKTPComponent OnClick="ClickHandler"></BukaRekeningKTPComponent>
+                    break;
+                }
+            case "bukarekeningktpberhasil":
+                {
+                    <BukaRekeningKTPBerhasilComponent OnClick="ClickHandler"></BukaRekeningKTPBerhasilComponent>
+                    break;
+                }
+            case "bukarekeningfinger":
+                {
+                    <BukaRekeningFingerComponent OnClick="ClickHandler"></BukaRekeningFingerComponent>
+                    break;
+                }
+            case "bukarekeningfingerberhasil":
+                {
+                    <BukaRekeningFingerBerhasilComponent OnClick="ClickHandler"></BukaRekeningFingerBerhasilComponent>
+                    break;
+                }
+            case "bukarekeningcapturektp":
+                {
+                    <BukaRekeningCaptureKTPComponent OnClick="ClickHandler"></BukaRekeningCaptureKTPComponent>
+                    break;
+                }
+            case "bukarekeningcapturektpberhasil":
+                {
+                    <BukaRekeningCaptureKTPBerhasilComponent OnClick="ClickHandler"></BukaRekeningCaptureKTPBerhasilComponent>
+                    break;
+                }
+            case "bukarekeningdataKTP":
+                {
+                    <BukaRekeningDataKTPComponent OnClick="ClickHandler"></BukaRekeningDataKTPComponent>
+                    break;
+                }
+            case "bukarekeningjenis":
+                {
+                    <BukaRekeningJenisComponent OnClick="ClickHandler"></BukaRekeningJenisComponent>
+                    break;
+                }
+            case "bukarekeningmodelkartu":
+                {
+                    <BukaRekeningModelKartuComponent OnClick="ClickHandler"></BukaRekeningModelKartuComponent>
+                    break;
+                }
+            case "bukarekeningsyarat":
+                {
+                    <BukaRekeningSyaratComponent OnClick="ClickHandler"></BukaRekeningSyaratComponent>
+                    break;
+                }
+            case "bukarekeninginputdata":
+                {
+                    <BukaRekeningInputDataComponent OnClick="ClickHandler"></BukaRekeningInputDataComponent>
+                    break;
+                }
+            case "bukarekeninginputdata2":
+                {
+                    <BukaRekeningInputData2Component OnClick="ClickHandler"></BukaRekeningInputData2Component>
+                    break;
+                }
+            case "bukarekeninginputNPWP":
+                {
+                    <BukaRekeningInputNPWPComponent OnClick="ClickHandler"></BukaRekeningInputNPWPComponent>
+                    break;
+                }
+            case "bukarekeningcaptureNPWP":
+                {
+                    <BukaRekeningNPWPComponent OnClick="ClickHandler"></BukaRekeningNPWPComponent>
+                    break;
+                }
+            case "bukarekeningcaptureNPWPberhasil":
+                {
+                    <BukaRekeningNPWPBerhasilComponent OnClick="ClickHandler"></BukaRekeningNPWPBerhasilComponent>
+                    break;
+                }
+            case "bukarekeningcapturewajah":
+                {
+                    <BukaRekeningCaptureWajahComponent OnClick="ClickHandler"></BukaRekeningCaptureWajahComponent>
+                    break;
+                }
+            case "bukarekeningcapturewajahberhasil":
+                {
+                    <BukaRekeningCaptureWajahBerhasilComponent OnClick="ClickHandler"></BukaRekeningCaptureWajahBerhasilComponent>
+                    break;
+                }
+            case "bukarekeningtandatangan":
+                {
+                    <BukaRekeningTandaTanganComponent OnClick="ClickHandler"></BukaRekeningTandaTanganComponent>
+                    break;
+                }
+            case "bukarekeningtandatangankonfirmasi":
+                {
+                    <BukaRekeningTandaTanganKonfirmasiComponent OnClick="ClickHandler"></BukaRekeningTandaTanganKonfirmasiComponent>
+                    break;
+                }
+            case "bukarekeningtandatangankedua":
+                {
+                    <BukaRekeningTandaTanganKeduaComponent OnClick="ClickHandler"></BukaRekeningTandaTanganKeduaComponent>
+                    break;
+                }
+            case "bukarekeningtandatangankeduakonfirmasi":
+                {
+                    <BukaRekeningTandaTanganKeduaKonfirmasiComponent OnClick="ClickHandler"></BukaRekeningTandaTanganKeduaKonfirmasiComponent>
+                    break;
+                }
+            case "bukarekeningdatatabungan":
+                {
+                    <BukaRekeningDataTabunganComponent OnClick="ClickHandler"></BukaRekeningDataTabunganComponent>
+                    break;
+                }
+            case "bukarekeninginputpinatm":
+                {
+                    <BukaRekeningInputPinATMComponent OnClick="ClickHandler"></BukaRekeningInputPinATMComponent>
+                    break;
+                }
+            case "bukarekeninginputpinatmkedua":
+                {
+                    <BukaRekeningInputPinATMKeduaComponent OnClick="ClickHandler"></BukaRekeningInputPinATMKeduaComponent>
+                    break;
+                }
+            case "bukarekeningmenuebanking":
+                {
+                    <BukaRekeningMenuEBankingComponent OnClick="ClickHandler"></BukaRekeningMenuEBankingComponent>
+                    break;
+                }
+            case "bukarekeninginputpinebanking":
+                {
+                    <BukaRekeningInputPinEBankingComponent OnClick="ClickHandler"></BukaRekeningInputPinEBankingComponent>
+                    break;
+                }
+            case "bukarekeninginputpinebankingkedua":
+                {
+                    <BukaRekeningInputPinEBankingKeduaComponent OnClick="ClickHandler"></BukaRekeningInputPinEBankingKeduaComponent>
+                    break;
+                }
+            case "bukarekeningsetoranawal":
+                {
+                    <BukaRekeningSetoranAwalComponent OnClick="ClickHandler"></BukaRekeningSetoranAwalComponent>
+                    break;
+                }
+            case "bukarekeningsetoranawaledc":
+                {
+                    <BukaRekeningSetoranAwalEDCComponent OnClick="ClickHandler"></BukaRekeningSetoranAwalEDCComponent>
+                    break;
+                }
+            case "bukarekeningberhasilkartu":
+                {
+                    <BukaRekeningBerhasilKartuComponent OnClick="ClickHandler"></BukaRekeningBerhasilKartuComponent>
+                    break;
+                }
+            case "bukarekeningberhasilstruk":
+                {
+                    <BukaRekeningBerhasilStrukComponent OnClick="ClickHandler"></BukaRekeningBerhasilStrukComponent>
+                    break;
+                }
+            case "bukarekeningsetoran":
+                {
+                    <BukaRekeningSetoranComponent OnClick="ClickHandler"></BukaRekeningSetoranComponent>
+                    break;
+                }
+            case "bukarekeningberhasil":
+                {
+                    <BukaRekeningBerhasilComponent OnClick="ClickHandler"></BukaRekeningBerhasilComponent>
+                    break;
+                }
+            case "bukarekeningdataberhasil":
+                {
+                    <BukaRekeningDataBerhasilComponent OnClick="ClickHandler"></BukaRekeningDataBerhasilComponent>
+                    break;
+                }
+            case "bukutabungan":
+                {
+                    <BukuTabunganComponent OnClick="ClickHandler"></BukuTabunganComponent>
+                    break;
+                }
+            case "bukuinputpin":
+                {
+                    <BukuInputPinComponent OnClick="ClickHandler"></BukuInputPinComponent>
+                    break;
+                }
+            case "bukuinputdata":
+                {
+                    <BukuInputDataComponent OnClick="ClickHandler"></BukuInputDataComponent>
+                    break;
+                }
+            case "bukukonfirmasi":
+                {
+                    <BukuKonfirmasiComponent OnClick="ClickHandler"></BukuKonfirmasiComponent>
+                    break;
+                }
+            case "bukuhalamanpenuh":
+                {
+                    <BukuHalamanPenuhComponent OnClick="ClickHandler"></BukuHalamanPenuhComponent>
+                    break;
+                }
+            case "bukuberhasil":
+                {
+                    <BukuBerhasilComponent OnClick="ClickHandler"></BukuBerhasilComponent>
+                    break;
+                }
+            case "bukupenuh":
+                {
+                    <BukuPenuhComponent OnClick="ClickHandler"></BukuPenuhComponent>
+                    break;
+                }
+            case "bukugagal":
+                {
+                    <BukuGagalComponent OnClick="ClickHandler"></BukuGagalComponent>
+                    break;
+                }
+            case "historitransaksi":
+                {
+                    <HistoriTransaksiComponent OnClick="ClickHandler"></HistoriTransaksiComponent>
+                    break;
+                }
+            case "historiInputPin":
+                {
+                    <HistoriInputPinComponent OnClick="ClickHandler"></HistoriInputPinComponent>
+                    break;
+                }
+            case "historiPilih":
+                {
+                    <HistoriPilihComponent OnClick="ClickHandler"></HistoriPilihComponent>
+                    break;
+                }
+            case "historiPilihMetode":
+                {
+                    <HistoriPilihMetodeComponent OnClick="ClickHandler"></HistoriPilihMetodeComponent>
+                    break;
+                }
+            case "historiBulanBerjalan":
+                {
+                    <KonfirmasiBulanBerjalanComponent OnClick="ClickHandler"></KonfirmasiBulanBerjalanComponent>
+                    break;
+                }
+            case "historiBulanTerakhir":
+                {
+                    <KonfirmasiBulanTerakhirComponent OnClick="ClickHandler"></KonfirmasiBulanTerakhirComponent>
+                    break;
+                }
+            case "historiBulanLalu":
+                {
+                    <KonfirmasiBulanLaluComponent OnClick="ClickHandler"></KonfirmasiBulanLaluComponent>
+                    break;
+                }
+            case "historiSepuluhTerakhir":
+                {
+                    <KonfirmasiSepuluhTerakhirComponent OnClick="ClickHandler"></KonfirmasiSepuluhTerakhirComponent>
+                    break;
+                }
+            case "historiberhasil":
+                {
+                    <HistoriBerhasilComponent OnClick="ClickHandler"></HistoriBerhasilComponent>
+                    break;
+                }
+            case "historigagal":
+                {
+                    <HistoriGagalComponent OnClick="ClickHandler"></HistoriGagalComponent>
+                    break;
+                }
+            case "blokirkartu":
+                {
+                    <BlokirKartuComponent OnClick="ClickHandler"></BlokirKartuComponent>
+                    break;
+                }
+            case "ambilkartu":
+                {
+                    <AmbilKartuComponent OnClick="ClickHandler"></AmbilKartuComponent>
+                    break;
+                }
+            case "statusmonitoring":
+                {
+                    <StatusMonitoringComponent OnClick="ClickHandler"></StatusMonitoringComponent>
+                    break;
+                }
+            case "insertdebit":
+                {
+                    <InsertDebitComponent OnClick="ClickHandler"></InsertDebitComponent>
+                    break;
+                }
+            case "inputpin":
+                {
+                    <InputPinComponent OnClick="ClickHandler"></InputPinComponent>
+                    break;
+                }
+            case "newhome":
+                {
+                    <NewHomeComponent OnClick="ClickHandler"></NewHomeComponent>
+                    break;
+                }
+            case "error":
+                {
+                    <ErrorComponent OnClick="ClickHandler"></ErrorComponent>
+                    break;
+                }
+            case "timeout":
+                {
+                    <TimeOutComponent OnClick="ClickHandler"></TimeOutComponent>
+                    break;
+                }
+            case "rekeningnotfound":
+                {
+                    <RekeningNotFoundComponent OnClick="ClickHandler"></RekeningNotFoundComponent>
+                    break;
+                }
+            case "notransaction":
+                {
+                    <NoTransactionComponent OnClick="ClickHandler"></NoTransactionComponent>
+                    break;
+                }
+            case "nothour":
+                {
+                    <NotHourComponent OnClick="ClickHandler"></NotHourComponent>
+                    break;
+                }
+            case "inputrekening":
+                {
+                    <InputRekeningComponent OnClick="ClickHandler"></InputRekeningComponent>
+                    break;
+                }
+            case "konfirmasirekening":
+                {
+                    <KonfirmasiRekeningComponent OnClick="ClickHandler"></KonfirmasiRekeningComponent>
+                    break;
+                }
+            case "monthlystatement":
+                {
+                    <MonthlyStatement OnClick="ClickHandler"></MonthlyStatement>
+                    break;
+                }
+            case "konfirmasimonthly":
+                {
+                    <KonfirmasiMonthlyStatement OnClick="ClickHandler"></KonfirmasiMonthlyStatement>
+                    break;
+                }
+            case "kartusalah":
+                {
+                    <KartuSalah OnClick="ClickHandler"></KartuSalah>
+                    break;
+                }
+            case "konfirmasiawal":
+                {
+                    <KonfirmasiNoRekening OnClick="ClickHandler"></KonfirmasiNoRekening>
+                    break;
+                }
+            case "konfirmasitimeout":
+                {
+                    <KonfirmasiTimeOut OnClick="ClickHandler"></KonfirmasiTimeOut>
+                    break;
+                }
+            case "historiberhasilmonthly":
+                {
+                    <HistoriBerhasilComponentMonthly OnClick="ClickHandler"></HistoriBerhasilComponentMonthly>
+                    break;
+                }
+            case "historiberhasilmonthlyemail":
+                {
+                    <HistoriBerhasilComponentMonthlyEmail OnClick="ClickHandler"></HistoriBerhasilComponentMonthlyEmail>
+                    break;
+                }
+            case "konfirmasinorekmonthly":
+                {
+                    <KonfirmasiNoRekeningMonthly OnClick="ClickHandler"></KonfirmasiNoRekeningMonthly>
+                    break;
+                }
+            case "inputpinmonthly":
+                {
+                    <InputPinMonthly OnClick="ClickHandler"></InputPinMonthly>
+                    break;
+                }
+            case "report":
+                {
+                    <ReportComponent OnClick="ClickHandler"></ReportComponent>
+                    break;
+                }
+            default:
+                {
+                    <LandingPage2Component OnClick="ClickHandler"></LandingPage2Component>
+                    //<NewHomeComponent OnClick="ClickHandler"></NewHomeComponent>
+                    //<KonfirmasiMonthlyStatement OnClick="ClickHandler"></KonfirmasiMonthlyStatement>
+                    //<HistoriPilihMetodeComponent OnClick="ClickHandler"></HistoriPilihMetodeComponent>
+                    break;
+                }
+        }
+
+    </div>
+</div>
+
+@code{
+    private string message = string.Empty;
+    private string language = "ID";
+    private int clickcount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        trx.clear();
+        Utility.WriteLog("Home condition : clear transaksi success", "step-action");
+        trx.clearTransactionLog();
+        Utility.WriteLog("Home condition : clear transaction log success", "step-action");
+        trx.clearArray();
+        Utility.WriteLog("Home condition : clear array success", "step-action");
+        trx.clearArrayNasabah();
+        Utility.WriteLog("Home condition : clear array nasabah success", "step-action");
+        trx.ClearList();
+        Utility.WriteLog("Home condition : clear list success", "step-action");
+        trxbaru.clear();
+        Utility.WriteLog("Home condition : clear transaksi baru success", "step-action");
+    }
+
+    private async Task testOnclik()
+    {
+        //if (DateTime.Now.Hour > 15 || DateTime.Now.Hour < 7)
+        //{
+        trx.clearReport();
+        //if (trx.isSendReport)
+        //{
+        await report.createReportCSV();
+        trx.reportAttachment = report.CSVName;
+        trx.reportPath = report.CSVPath;
+        trx.isSendReport = false;
+        string result = await HitServices.SendEmailReport(trx, config);
+        await Task.Delay(3000);
+        JObject jobResult = JObject.Parse(result);
+        if (jobResult["fcdEmailResult"]["statusCode"].ToString() == "2111")
+        {
+            Console.WriteLine("SEND REPORT SUCCESS");
+        }
+        else
+        {
+            Console.WriteLine("SEND REPORT FAILED");
+        }
+        //}
+        //    }
+        //else
+        //{
+        //    isSendReport = true;
+        //}
+    }
+
+    private async Task Report()
+    {
+        clickcount += 1;
+        if (clickcount == 3)
+            message = "report";
+    }
+
+    void ClickHandler(string strmessage)
+    {
+        message = strmessage;
+    }
+
+    void LangChange()
+    {
+        if (language == "ID")
+            language = "EN";
+        else if (language == "EN")
+            language = "ID";
+    }
+}

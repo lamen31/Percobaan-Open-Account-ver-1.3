@@ -1,0 +1,159 @@
+﻿@using Microsoft.AspNetCore.Components
+@using OpenAccount.Data
+
+@inject Utility utility
+@inject TransaksiBaru trxbaru
+
+<!-- ======= Hero Section ======= -->
+<section id="hero" style="margin-top: 50px;">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <span class="badge badge-primary" style="margin-bottom: 2rem; font-size: 20px;">Buka Rekening</span><br>
+                </div>
+                <h3 style="color: #00529C; text-align: center; font-weight: 900; margin-bottom: 2%;">Berikut Data Tabungan Anda</h3>
+
+                <div style="padding-left: 10%; padding-right: 10%;">
+                    <div class="card example-2 scrollbar-ripe-malinka">
+                        <div class="card-body">
+                            <table style="margin-top: 5%; margin-left: 10%;">
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> NIK </h4></td>
+                                    <td><h4 style="font-weight: 600;">:&emsp;</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._NIK</h4><br></td>
+                                </tr>
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> Nama </h4></td>
+                                    <td><h4 style="font-weight: 600;">:</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._Nama</h4><br></td>
+                                </tr>
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> Tempat/Tgl Lahir</h4></td>
+                                    <td><h4 style="font-weight: 600;">:</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._TTL</h4><br></td>
+                                </tr>
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> Nama Ibu</h4></td>
+                                    <td><h4 style="font-weight: 600;">:</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._NamaIbu</h4><br></td>
+                                </tr>
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> Email</h4></td>
+                                    <td><h4 style="font-weight: 600;">:</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._Email</h4><br></td>
+                                </tr>
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> Alamat </h4></td>
+                                    <td><h4 style="font-weight: 600;">:</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._AlamatKTP</h4><br></td>
+                                </tr>
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> Pekerjaan</h4></td>
+                                    <td><h4 style="font-weight: 600;">:</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._PekerjaanKTP</h4><br></td>
+                                </tr>
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> Tujuan Buka Rekening</h4></td>
+                                    <td><h4 style="font-weight: 600;">:</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._TujuanRekening</h4><br></td>
+                                </tr>
+                                <tr>
+                                    <td><h4 style="font-weight: 900;"> Jenis Tabungan</h4></td>
+                                    <td><h4 style="font-weight: 600;">:</h4></td>
+                                    <td><h4 style="font-weight: 600;">@trxbaru._JenisTabungan</h4><br></td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+<!-- ======= Footer ======= -->
+<footer id="footer" class="fixed-bottom">
+    <div class="container" style="display: flex;">
+        <div class="col-xl-2 order-1 order-lg-1">
+            <button type="button" class="btn btn-primary" style="background-color: #4E4E4E;" @onclick="TandaTangan">Batal</button>
+        </div>
+        <div class="col-xl-8 order-2 order-lg-2">
+            <ol class="track-progressBR" style="margin-left: 0%; margin-bottom: 2%;">
+                <li class="done">
+                    <em>1</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>2</em>
+                    <!-- <span>T & C</span> -->
+                </li>
+                <li class="done">
+                    <em>3</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="done">
+                    <em>4</em>
+                    <!-- <span>Verification</span> -->
+                </li>
+                <li class="done">
+                    <em>5</em>
+                    <!-- <span>Insert Money</span> -->
+                </li>
+                <li class="done">
+                    <em>6</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>7</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>8</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>9</em>
+                    <!-- <span>Done</span> -->
+                </li>
+                <li class="todo">
+                    <em>10</em>
+                    <!-- <span>Done</span> -->
+                </li>
+            </ol>
+        </div>
+        <div class="col-xl-2 order-3 order-lg-3">
+            <button type="button" class="btn btn-primary" style="float: right;" @onclick="InputPin">Lanjut</button>
+        </div>
+    </div>
+</footer><!-- End Footer -->
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Utility.WriteLog("Buka rekening condition : entered into buka rekening tampil data tabungan", "step-action");
+        }
+    }
+
+    private async Task TandaTangan()
+    {
+        Utility.WriteLog("Buka rekening condition : move to buka rekening tanda tangan", "step-action");
+        OnClick.InvokeAsync("bukarekeningtandatangan");
+    }
+
+    private async Task InputPin()
+    {
+        Utility.WriteLog("Buka rekening condition : move to buka rekening input atm", "step-action");
+        OnClick.InvokeAsync("bukarekeninginputpinatm");
+    }
+}

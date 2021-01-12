@@ -1,0 +1,195 @@
+﻿@using Microsoft.AspNetCore.Components
+@using OpenAccount.Data
+
+@inject Utility utility
+@inject Transaksi trx
+<!-- ======= Hero Section ======= -->
+<section id="hero" style="margin-top: 50px;">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                <div>
+                    <span class="badge badge-primary" style="margin-bottom: 2rem; font-size: 20px;">Ganti Kartu</span><br>
+                </div>
+                <h3 style="color: #00529C;">Masukkan Nomor rekening Anda yang <b>Hilang/Rusak</b></h3>
+                <div class="form-row" style="margin-top: 9%;">
+                    <div class="form-group col-md-6">
+                        <label style="font-weight: 600; font-size: 18px;">Nomor Rekening</label>
+                        @if (strnorek == string.Empty)
+                        {
+                            <input type="text" class="form-control num-field" placeholder="nomor rekening anda">
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control num-field" @bind="strnorek">
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                <div id="keyboard">
+                    <container>
+                        <button class="block" value="1" @onclick="@(() => InputCharData("1"))">1</button>
+                        <button class="block" value="2" @onclick="@(() => InputCharData("2"))">2</button>
+                        <button class="block" value="3" @onclick="@(() => InputCharData("3"))">3</button>
+                        <button class="block" value="4" @onclick="@(() => InputCharData("4"))">4</button>
+                        <button class="block" value="5" @onclick="@(() => InputCharData("5"))">5</button>
+                        <button class="block" value="6" @onclick="@(() => InputCharData("6"))">6</button>
+                        <button class="block" value="7" @onclick="@(() => InputCharData("7"))">7</button>
+                        <button class="block" value="8" @onclick="@(() => InputCharData("8"))">8</button>
+                        <button class="block" value="9" @onclick="@(() => InputCharData("9"))">9</button>
+                        <button class="block" h2="" value="Hapus" @onclick="RemoveCharData">Delete</button>
+                        <button class="block" ck value="0" id="myBtnUndefine" @onclick="@(() => InputCharData("0"))">0</button>
+                    </container>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+<!-- ======= Footer ======= -->
+<footer id="footer" class="fixed-bottom">
+    <div class="container" style="display: flex;">
+        <div class="col-xl-2 order-1 order-lg-1">
+            <button type="button" class="btn btn-primary" style="background-color: #4E4E4E;" @onclick="Home">Batal</button>
+        </div>
+        <div class="col-xl-8 order-2 order-lg-2">
+            <ol class="track-progressGK" style="margin-left: 0%; margin-bottom: 2%;">
+                <li class="done">
+                    <em>1</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="todo">
+                    <em>2</em>
+                    <!-- <span>T & C</span> -->
+                </li>
+                <li class="todo">
+                    <em>3</em>
+                    <!-- <span>Menu</span> -->
+                </li>
+                <li class="todo">
+                    <em>4</em>
+                    <!-- <span>Verification</span> -->
+                </li>
+                <li class="todo">
+                    <em>5</em>
+                    <!-- <span>Insert Money</span> -->
+                </li>
+            </ol>
+        </div>
+        <div class="col-xl-2 order-3 order-lg-3">
+            <button type="button" class="btn btn-primary" style="float: right;" @onclick="KTP">Lanjut</button>
+        </div>
+    </div>
+</footer><!-- End Footer -->
+
+@if (isTime)
+{
+    <div class="modal" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:rgba(0, 0, 0, 0.418);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status" style="padding:0.5rem; margin-top: 5%;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; color: rgb(0, 0, 0);">
+                        <h3 class="teks" style="margin-top: 5%;">MAAF,</h3>
+                        <h5 style="font-style:italic;">Waktu Anda Telah Habis!</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    private string strnorek = string.Empty;
+    private TimeSpan span;
+    private int overtime = 180000;
+    private bool isTimeOut = false;
+    private bool isTime = false;
+    private DateTime starttime;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Utility.WriteLog("Ganti kartu condition : entered into ganti kartu input rekening", "step-action");
+            starttime = DateTime.Now;
+            await Task.Run(() => IdleTime());
+            if (isTime)
+            {
+                isTimeOut = true;
+                await Task.Delay(100);
+                StateHasChanged();
+                await Task.Delay(2000);
+                OnClick.InvokeAsync("home");
+            }
+        }
+    }
+
+    private async Task IdleTime()
+    {
+        do
+        {
+            span = DateTime.Now - starttime;
+            if (overtime > 0 && span.TotalMilliseconds > overtime)
+            {
+                isTime = true;
+                isTimeOut = true;
+                break;
+            }
+        } while (isTimeOut == false);
+    }
+
+    private async Task ChangeIsTime()
+    {
+        isTime = !isTime;
+        await Task.Delay(100);
+        StateHasChanged();
+    }
+
+    private void InputCharData(string strinput)
+    {
+        if (strnorek.Length < 19)
+        {
+            strnorek += strinput;
+            if (strnorek.Length == 2)
+                strnorek += "-";
+            if (strnorek.Length == 7)
+                strnorek += "-";
+            if (strnorek.Length == 14)
+                strnorek += "-";
+            if (strnorek.Length == 17)
+                strnorek += "-";
+        }
+    }
+
+    private void RemoveCharData()
+    {
+        if (strnorek.Length > 0)
+            strnorek = strnorek.Substring(0, strnorek.Length - 1);
+    }
+
+    private async Task Home()
+    {
+        Utility.WriteLog("Ganti kartu condition : move to home", "step-action");
+        OnClick.InvokeAsync("home");
+    }
+
+    private async Task KTP()
+    {
+        if (strnorek.Length == 19)
+        {
+            trx.clearKTP();
+            Utility.WriteLog("Ganti kartu condition : move to ganti kartu pindai ktp", "step-action");
+            OnClick.InvokeAsync("gantikartupindaiktp");
+        }
+    }
+}
