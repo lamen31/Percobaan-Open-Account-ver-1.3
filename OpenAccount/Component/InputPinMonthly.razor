@@ -147,6 +147,13 @@
     private bool isReadPin = false;
     private int tryLimit = 3;
 
+    private TimeSpan span;
+    private int overtime = 30000;
+    private bool istimeout = false;
+    private bool isTime = false;
+    private bool isTimer = true;
+    private DateTime starttime;
+
     private void CancelEDC()
     {
         //isCancel = true;
@@ -173,6 +180,20 @@
         //await InputPin();
     }
 
+    private async Task IdleTime()
+    {
+        do
+        {
+            span = DateTime.Now - starttime;
+            if (overtime > 0 && span.TotalMilliseconds > overtime)
+            {
+                isTime = true;
+                istimeout = true;
+                break;
+            }
+        } while (isTimeOut == false);
+    }
+
     private async Task InputPin()
     {
         while (isEDC)
@@ -185,6 +206,23 @@
                 await EDC("12");
                 if (isComplete)
                 {
+                    //isTimer = true;
+                    //starttime = DateTime.Now;
+                    //await Task.Run(() => IdleTime());
+                    //if (isTime && isTimer)
+                    //{
+                    //    string errormessage = "Service Pin Time Out";
+                    //    string errorcode = "SERVICE-TIME-OUT";
+                    //    trx.setErrorService(errorcode, errorcode);
+                    //    istimeout = true;
+                    //    await Task.Delay(100);
+                    //    StateHasChanged();
+                    //    await Task.Delay(2000);
+                    //    isTimer = false;
+                    //    OnClick.InvokeAsync("error");
+                    //    return;
+                    //}
+
                     await CekPin();
                     //isValid = true;
                     //isInvalid = true;
@@ -199,6 +237,8 @@
                             await InquiryCIFByAcct();
                             if (isCIFInquiry)
                             {
+                                istimeout = true;
+                                isTimer = false;
                                 trx._AccountNumber2 = trx._AccountNumber;
                                 OnClick.InvokeAsync("newhome");
                                 return;
@@ -208,6 +248,8 @@
                                 await ServiceRekening();
                                 if (isAccountInquiry)
                                 {
+                                    istimeout = true;
+                                    isTimer = false;
                                     trx._AccountNumber2 = trx._AccountNumber;
                                     OnClick.InvokeAsync("newhome");
                                     return;
@@ -940,6 +982,7 @@
                         //trx.alamat1
                         //trx.setArrayNasabah(Nasabah);
                         isData = true;
+                        isCIFInquiry = true;
                         await Task.Delay(100);
                         StateHasChanged();
                     }

@@ -114,6 +114,78 @@ namespace OpenAccount.Data
             return await CallAPI(myUrl, content, "POST");
         }
 
+        public static async Task<string> GetExternalTest(Transaksi trx, Config config, string errorMessage)
+        {
+            string myLink = config.Read("LINK", Config.PARAM_SERVICES_REPORT);
+            string myPath = "log/external";
+            string myUrl = myLink + myPath;
+            LogData logdata = new LogData
+            {
+                jenisTransaksi = "5Trx",
+                kodeTransaksi = "5trx",
+                idTransaksi = "123123",
+                namaNasabah = "nana",
+                noKartu = "123",
+                noSeriPassbook = "",
+                saldoBuku = "",
+                lineInput = "",
+                startDate = "",
+                endDate = "",
+                idxMonth = "NO",
+                tglTransaksi = "2020-12-01",
+                noRekening = "123",
+                statusTransaksi = "Sukse",
+                smsNotif = "success",
+                emailNotif = "success",
+                errorMessage = "",
+                externalId = "20210113154536897",
+            };
+
+            var _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+
+            var content = new StringContent(
+                JsonSerializer.Serialize(logdata, _jsonSerializerOptions),
+                Encoding.UTF8, "application/json");
+
+            return await CallAPI(myUrl, content, "GET");
+        }
+
+        public static async Task<string> SendLogTest(Transaksi trx, Config config, string errorMessage)
+        {
+            string myLink = config.Read("LINK", Config.PARAM_SERVICES_REPORT);
+            string myPath = config.Read("LINK", Config.PARAM_SERVICES_LOG);
+            string myUrl = myLink + myPath;
+            LogData logdata = new LogData
+            {
+                jenisTransaksi = "5Trx",
+                kodeTransaksi = "5trx",
+                idTransaksi = "123123",
+                namaNasabah = "nana",
+                noKartu = "123",
+                noSeriPassbook = "",
+                saldoBuku = "",
+                lineInput = "",
+                startDate = "",
+                endDate = "",
+                idxMonth = "NO",
+                tglTransaksi = "2020-12-01",
+                noRekening = "123",
+                statusTransaksi = "Sukse",
+                smsNotif = "success",
+                emailNotif = "success",
+                errorMessage = "",
+                externalId = trx.externalID,
+            };
+
+            var _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+
+            var content = new StringContent(
+                JsonSerializer.Serialize(logdata, _jsonSerializerOptions),
+                Encoding.UTF8, "application/json");
+
+            return await CallAPI(myUrl, content, "POST");
+        }
+
 
         public static async Task<string> InquiryNotification(Transaksi trx, Config config)
         {
@@ -191,19 +263,22 @@ namespace OpenAccount.Data
             return await CallAPI(myUrl, content, "POST");
         }
 
-        public static async Task<string> SendEmailReport(Transaksi trx, Config config)
+        public static async Task<string> SendEmailReport(Reports reports, Config config)
         {
             //string error;
             //string errorcode;
             //string errormessage;
             //try
             //{
+            
                 string myLink = config.Read("LINK", Config.PARAM_SERVICES_REPORT);
                 string myUrl = myLink + "notif/emailreport";
             //if (!RegexUtilities.IsValidEmail(trx.emailNasabah))
             //{
             //    return "Format Email Tidak Valid";
             //}
+            Console.WriteLine("lampiran " + reports.CSVName);
+            Console.WriteLine("path " + reports.CSVPath);
             EmailData emaildata = new EmailData
                 {
                     emailNasabah = "",
@@ -211,8 +286,8 @@ namespace OpenAccount.Data
                     namaNasabah = "",
                     noRekening = "0",
                     statusTransaksi = "Sukses",
-                    lampiran = trx.reportAttachment,
-                    path = trx.reportPath,
+                    lampiran = reports.CSVName,
+                    path = reports.CSVPath,
                 };
 
                 var _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, };

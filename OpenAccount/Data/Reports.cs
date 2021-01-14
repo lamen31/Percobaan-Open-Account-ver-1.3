@@ -24,6 +24,7 @@ namespace OpenAccount.Data
 
         public string startdate;
         public string enddate;
+        public string enddateName;
 
         public string CSVName = string.Empty;
         public string CSVPath = string.Empty;
@@ -159,7 +160,7 @@ namespace OpenAccount.Data
             if (trx.reportStatus == "SUCCESS")
             {
                 string path = Directory.GetCurrentDirectory();
-                CSVName = "TRILOGI" + "_REPORT_" + startdate + "_" + enddate + ".csv";
+                CSVName = "TRILOGI" + "_REPORT_" + startdate + "_" + enddateName + ".csv";
                 CSVPath =  @"c:\Reports\" + CSVName;
 
                 // Set the variable "delimiter" to ", ".
