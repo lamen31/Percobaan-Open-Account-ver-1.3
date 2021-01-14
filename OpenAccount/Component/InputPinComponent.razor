@@ -349,6 +349,7 @@
                     //trx.statusLayanan = "CANCEL";
                     //HitLog.SendLog(trx, config, "INPUT PIN: " + "Input Pin Timeout");
                     OnClick.InvokeAsync("konfirmasitimeout");
+                    break;
                 }
                 else if (isFailed)
                 {
@@ -359,6 +360,10 @@
             {
                 Console.WriteLine(ex.Message);
                 Utility.WriteLog("Home condition : EDC error --> " + ex.Message, "step-action");
+
+                trx.setErrorService("Exception", ex.Message);
+                OnClick.InvokeAsync("error");
+                return;
             }
         }
     }
@@ -840,6 +845,7 @@
                         StateHasChanged();
                         //return;
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                 }
             }
@@ -852,6 +858,7 @@
                 HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
                 trx.setErrorService(errorcode, errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -863,6 +870,7 @@
             HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
             trx.setErrorService(errorcode, errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
     private async Task InquiryByCardNo()
@@ -937,6 +945,7 @@
 
                         await Task.Delay(100);
                         StateHasChanged();
+                        return;
                     }
                     else
                     {
@@ -948,6 +957,7 @@
                         trx.externalID = (string)jobResult["externalId"];
                         HitLog.SendLog(trx, config, "INPUT PIN: " + errormessage);
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                 }
             }
@@ -958,6 +968,7 @@
                 errormessage = ex.Message;
                 trx.setErrorService(errorcode, errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -967,6 +978,7 @@
             errormessage = ex.Message;
             trx.setErrorService(errorcode, errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
     private async Task InquiryCIFByAcct()
@@ -1007,6 +1019,7 @@
                         await Task.Delay(100);
                         trx.externalID = (string)jobResult["externalId"];
                         StateHasChanged();
+                        return;
                     }
                     else
                     {
@@ -1020,6 +1033,7 @@
                         StateHasChanged();
                         //return;
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                 }
             }
@@ -1042,6 +1056,7 @@
                 trx.statusLayanan = "ERROR";
                 HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -1063,6 +1078,7 @@
             trx.statusLayanan = "ERROR";
             HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
 
@@ -1099,6 +1115,7 @@
                         isAccountInquiry = true;
                         await Task.Delay(100);
                         StateHasChanged();
+                        return;
                     }
                     else
                     {
@@ -1112,6 +1129,7 @@
                         StateHasChanged();
                         //return;
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                 }
             }
@@ -1134,6 +1152,7 @@
                 trx.statusLayanan = "ERROR";
                 HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -1155,6 +1174,7 @@
             trx.statusLayanan = "ERROR";
             HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
 }

@@ -312,6 +312,7 @@
                 {
                     isEDC = false;
                     OnClick.InvokeAsync("konfirmasitimeout");
+                    break;
                 }
                 else if (isFailed)
                 {
@@ -326,6 +327,7 @@
                 //HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC Error --> " + ex.Message);
                 trx.setErrorService("Exception", ex.Message);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
     }
@@ -494,6 +496,7 @@
             //HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC Error --> " + ex.Message);
             trx.setErrorService("Exception", ex.Message);
             OnClick.InvokeAsync("error");
+            return;
         }
 
         Utility.WriteLog("Home condition : EDC serial port write", "step-action");
@@ -708,6 +711,7 @@
                     //HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: EDC NAK ");
                     trx.setErrorService("", "EDC Return NAK");
                     OnClick.InvokeAsync("error");
+                    return;
                 }
             }
             await Task.Delay(100);
@@ -822,6 +826,7 @@
                         StateHasChanged();
                         //return;
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                 }
             }
@@ -834,6 +839,7 @@
                 HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Cek Pin Error --> " + ex.Message);
                 trx.setErrorService(errorcode, errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -845,6 +851,7 @@
             HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Cek Pin Error --> " + ex.Message);
             trx.setErrorService(errorcode, errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
     private async Task InquiryByCardNo()
@@ -914,6 +921,7 @@
 
                         await Task.Delay(100);
                         StateHasChanged();
+                        return;
                     }
                     else
                     {
@@ -925,6 +933,7 @@
                         trx.externalID = (string)jobResult["externalId"];
                         HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry By Card No --> " + errormessage);
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                 }
             }
@@ -937,6 +946,7 @@
                 trx.statusLayanan = "ERROR";
                 HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry By Card No --> " + errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -948,6 +958,7 @@
             trx.statusLayanan = "ERROR";
             HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry By Card No --> " + errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
     private async Task InquiryCIFByAcct()
@@ -985,6 +996,7 @@
                         isCIFInquiry = true;
                         await Task.Delay(100);
                         StateHasChanged();
+                        return;
                     }
                 }
             }
@@ -1007,6 +1019,7 @@
                 trx.statusLayanan = "ERROR";
                 HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -1028,6 +1041,7 @@
             trx.statusLayanan = "ERROR";
             HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Inquiry Cif By Acct --> " + errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
 
@@ -1063,6 +1077,7 @@
                         isAccountInquiry = true;
                         await Task.Delay(100);
                         StateHasChanged();
+                        return;
                     }
                 }
             }
@@ -1085,6 +1100,7 @@
                 trx.statusLayanan = "ERROR";
                 HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Service Rekening --> " + errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -1106,6 +1122,7 @@
             trx.statusLayanan = "ERROR";
             HitServices.SendLog(trx, config, "INPUT PIN MONTHLY: Service Rekening --> " + errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
 }

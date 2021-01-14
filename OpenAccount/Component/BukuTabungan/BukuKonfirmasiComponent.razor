@@ -291,6 +291,7 @@
                 await Task.Delay(2000);
                 isTime = false;
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }
@@ -308,6 +309,7 @@
         Utility.WriteLog("Buku condition : move to ambil kartu", "step-action");
         isTimer = false;
         OnClick.InvokeAsync("ambilkartu");
+        return;
     }
 
     private async Task ServicePassbook()
@@ -358,6 +360,7 @@
                         await Task.Delay(100);
                         trx.externalID = (string)jobResult["externalId"];
                         StateHasChanged();
+                        return;
                     }
                     else if ((string)jobResult["RESPONSE"].SelectToken("ERROR_CODE") == "AS-260" || (string)jobResult["RESPONSE"].SelectToken("RESPONSE_CODE") == "NI")
                     {
@@ -372,6 +375,7 @@
                         //HitServices.SendLog(trx, config, "BUKU KONFIRMASI: " + errormessage);
                         isTimer = false;
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                     else if ((string)jobResult["RESPONSE"].SelectToken("ERROR_CODE") == "AS-001" || (string)jobResult["RESPONSE"].SelectToken("RESPONSE_CODE") == "03")
                     {
@@ -386,6 +390,7 @@
                         HitServices.SendLog(trx, config, "BUKU KONFIRMASI: " + errormessage);
                         isTimer = false;
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                     else if ((string)jobResult["RESPONSE"].SelectToken("ERROR_CODE") == "AS-287" || (string)jobResult["RESPONSE"].SelectToken("RESPONSE_CODE") == "77")
                     {
@@ -400,6 +405,7 @@
                         HitServices.SendLog(trx, config, "BUKU KONFIRMASI: " + errormessage);
                         isTimer = false;
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                     else
                     {
@@ -413,6 +419,7 @@
                         HitServices.SendLog(trx, config, "BUKU KONFIRMASI: " + errormessage);
                         isTimer = false;
                         OnClick.InvokeAsync("error");
+                        return;
                     }
 
                 }
@@ -429,6 +436,7 @@
                 HitServices.SendLog(trx, config, "BUKU KONFIRMASI: " + errormessage);
                 isTimer = false;
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -442,6 +450,7 @@
             HitServices.SendLog(trx, config, "BUKU KONFIRMASI: " + errormessage);
             isTimer = false;
             OnClick.InvokeAsync("error");
+            return;
         }
     }
 
@@ -452,6 +461,7 @@
         trx.ClearList();
         isTimer = false;
         OnClick.InvokeAsync("bukuinputdata");
+        return;
     }
 
     private async Task CheckRekening()
@@ -675,6 +685,7 @@
                     isTimeOut = true;
                     isTimer = false;
                     OnClick.InvokeAsync("bukuhalamanpenuh");
+                    return;
                     //if (isBerhenti)
                     //{
                     //    i = n;
@@ -699,6 +710,7 @@
                 Utility.WriteLog("Buku condition : move to buku berhasil", "step-action");
                 isTimer = false;
                 OnClick.InvokeAsync("bukuberhasil");
+                return;
             }
         }
         else if (isBisnis && !isSimpedes)
@@ -877,6 +889,7 @@
                     isTimeOut = true;
                     isTimer = false;
                     OnClick.InvokeAsync("bukuhalamanpenuh");
+                    return;
                     //if (isBerhenti)
                     //{
                     //    i = n;
@@ -901,6 +914,7 @@
                 Utility.WriteLog("Buku condition : move to buku berhasil", "step-action");
                 isTimer = false;
                 OnClick.InvokeAsync("bukuberhasil");
+                return;
             }
         }
         //else if (!isBisnis && isSimpedes)

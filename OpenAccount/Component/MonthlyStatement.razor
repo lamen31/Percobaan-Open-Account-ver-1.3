@@ -233,6 +233,7 @@
                 await Task.Delay(2000);
                 isTime = false;
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }
@@ -294,6 +295,7 @@
         isTimer = false;
         isTimeOut = true;
         OnClick.InvokeAsync("historiPilih");
+        return;
     }
 
     private async Task Cetak()
@@ -570,6 +572,7 @@
                         trx.externalID = (string)jobResult["externalId"];
                         //OnClick.InvokeAsync("konfirmasimonthly");
                         OnClick.InvokeAsync("historiPilihMetode");
+                        return;
                     }
                     else
                     {
@@ -583,6 +586,7 @@
                         trx.externalID = (string)jobResult["externalId"];
                         HitServices.SendLog(trx, config, "MONTHLY STATEMENT: " + errormessage);
                         OnClick.InvokeAsync("error");
+                        return;
                     }
                 }
             }
@@ -596,6 +600,7 @@
                 trx.statusLayanan = "ERROR";
                 HitServices.SendLog(trx, config, "HISTORY PILIH: " + errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -608,6 +613,7 @@
             trx.statusLayanan = "ERROR";
             HitServices.SendLog(trx, config, "HISTORY PILIH: " + errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
 }

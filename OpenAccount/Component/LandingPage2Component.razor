@@ -14,7 +14,7 @@
 @inject HitServices services
 <!-- ======= Hero Section ======= -->
 <body oncontextmenu="return false" class="bg-home2" style="background-image:url('../assets/img/Folder SVG/bg-landing.svg')">
-    <section id="hero" style="position: fixed;" @onclick="testOnclik">
+    <section id="hero" style="position: fixed;">
         
         <div class="container" >
             <div class="row" style="margin-top:8%;">
@@ -357,6 +357,7 @@
             StateHasChanged();
             Console.WriteLine(TimeNow);
             OnClick.InvokeAsync("nothour");
+            return;
         }
         else
         {
@@ -364,6 +365,7 @@
             isTimer = false;
             isTimeOut = true;
             OnClick.InvokeAsync("insertdebit");
+            return;
         }
 
     }

@@ -268,6 +268,7 @@
                 await Task.Delay(2000);
                 isTime = false;
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }
@@ -300,12 +301,14 @@
                 if (jobResult["fcdEmailResult"]["statusCode"].ToString() == "2111")
                 {
                     OnClick.InvokeAsync("historiberhasilmonthlyemail");
+                    return;
                 }
                 else
                 {
                     trx.setErrorService("EmailFailed", "Failed to Send Email");
                     HitServices.SendLog(trx, config, "KONFIRMASI MONTHLY STATEMENT: Failed to send Email, " + jobResult["fcdEmailResult"]["statusDesc"].ToString());
                     OnClick.InvokeAsync("error");
+                    return;
                 }
             }
             else
@@ -315,6 +318,7 @@
                 isVisible = !isVisible;
                 isTimer = false;
                 OnClick.InvokeAsync("historiberhasilmonthly");
+                return;
             }
             //OnClick.InvokeAsync("historipilihmetode");
         }
@@ -327,6 +331,7 @@
         Utility.WriteLog("Histori condition : move to histori pilih menu", "step-action");
         isTimer = false;
         OnClick.InvokeAsync("historiPilih");
+        return;
     }
 
     private async Task Kembali()
@@ -335,6 +340,7 @@
         Utility.WriteLog("Histori condition : move to histori pilih metode", "step-action");
         isTimer = false;
         OnClick.InvokeAsync("historiPilihMetode");
+        return;
     }
 
     private async Task AmbilKartu()
@@ -343,5 +349,6 @@
         Utility.WriteLog("Histori condition : move to ambil kartu", "step-action");
         isTimer = false;
         OnClick.InvokeAsync("default");
+        return;
     }
 }

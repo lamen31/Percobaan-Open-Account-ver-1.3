@@ -171,6 +171,7 @@
                 await Task.Delay(2000);
                 isTimer = false;
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }
@@ -204,6 +205,8 @@
 
     private async Task LanjutCetak()
     {
+        isTimeOut = true;
+        isTimer = false;
         ClickCount += 1;
         tempmaxbaris = config.Read("PASSBOOK", Config.PARAM_PASSBOOK_MAXBARIS);
         maxbaris = Convert.ToInt32(tempmaxbaris);
@@ -352,6 +355,8 @@
                     Utility.WriteLog("Buku condition : print history halaman ke-" + jmlhalaman.ToString() + " success", "step-action");
                     //await Task.Delay(10000);
                     Utility.WriteLog("Buku condition : move to buku berhasil", "step-action");
+                    isTimer = false;
+                    isTimeOut = true;
                     OnClick.InvokeAsync("bukuberhasil");
                     break;
                 }
@@ -496,5 +501,6 @@
         isTimeOut = true;
         isTimer = false;
         OnClick.InvokeAsync("bukupenuh");
+        return;
     }
 }

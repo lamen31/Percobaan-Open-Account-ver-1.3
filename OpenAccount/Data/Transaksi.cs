@@ -609,6 +609,7 @@ namespace OpenAccount.Data
             _BukuHalaman = string.Empty;
             _BukuDate = string.Empty;
             _BukuSaldo = string.Empty;
+            _BukuSerial = string.Empty;
             _KTPNIK = string.Empty;
             _KTPNama = string.Empty;
             _KTPTempatLahir = string.Empty;

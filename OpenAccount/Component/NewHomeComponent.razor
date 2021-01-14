@@ -125,6 +125,7 @@
                 await Task.Delay(2000);
                 isTime = false;
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }
@@ -136,6 +137,7 @@
         Utility.WriteLog("Home condition : move to buku input data", "step-action");
         trx.jenisLayanan = 0;//0. Pencetakan Passbook Printing
         OnClick.InvokeAsync("bukuinputdata");
+        return;
     }
 
     private async Task PrintHistori()
@@ -145,6 +147,7 @@
         Utility.WriteLog("Home condition : move to histori pilih menu", "step-action");
         trx.jenisLayanan = 2;//2. Pencetakan Rekening Koran
         OnClick.InvokeAsync("historiPilih");
+        return;
     }
 
     private async Task AmbilKartu()
@@ -154,5 +157,6 @@
         Utility.WriteLog("Home condition : move to ambil kartu", "step-action");
         HitServices.SendLog(trx, config, "NEW HOME: User Cancel Transaction");
         OnClick.InvokeAsync("default");
+        return;
     }
 }

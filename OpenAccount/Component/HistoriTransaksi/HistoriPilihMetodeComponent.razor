@@ -234,6 +234,7 @@
                 await Task.Delay(2000);
                 isTime = false;
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }
@@ -282,6 +283,7 @@
         isTimer = false;
         isTimeOut = true;
         OnClick.InvokeAsync("historiPilih");
+        return;
     }
 
     private async Task Lanjut()
@@ -295,6 +297,7 @@
         else
         {
             OnClick.InvokeAsync("konfirmasimonthly");
+            return;
         }
         //OnClick.InvokeAsync("konfirmasimonthly");
     }
@@ -311,6 +314,7 @@
         if (RegexUtilities.IsValidEmail(trx.emailNasabah))
         {
             OnClick.InvokeAsync("konfirmasimonthly");
+            return;
         }
         else
         {
@@ -320,6 +324,7 @@
             //HitLog.SendLog(trx, config, "HISTORY PILIH METODE: Email Not Valid");
             HitServices.SendLog(trx, config, "HISTORY PILIH METODE: Email Not Valid");
             OnClick.InvokeAsync("error");
+            return;
         }
     }
 

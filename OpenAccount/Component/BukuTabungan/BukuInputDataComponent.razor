@@ -351,6 +351,7 @@
                 //HitLog.SendLog(trx, config, "NEW HOME: Konfirmasi Timeout");
                 HitServices.SendLog(trx, config, "BUKU INPUT DATA: Konfirmasi Timeout");
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }
@@ -373,6 +374,7 @@
             isTimeOut = true;
             isTimer = false;
             OnClick.InvokeAsync("error");
+            return;
         }
         else if (isBisnis)
         {
@@ -386,6 +388,7 @@
             isTimeOut = true;
             isTimer = false;
             OnClick.InvokeAsync("error");
+            return;
         }
         trx._AccountNumber = trx._AccountNumber2;
         Utility.WriteLog("Buku condition : set account number " + trx._AccountNumber + " on Buku Input Data", "step-action");
@@ -497,6 +500,7 @@
         HitServices.SendLog(trx, config, "BUKU INPUT DATA: User Cancel Transaction");
         isTimer = false;
         OnClick.InvokeAsync("default");
+        return;
     }
 
     private async Task BukuKonfirmasi()
@@ -566,6 +570,7 @@
                 Utility.WriteLog("Buka rekening condition : move to buku konfirmasi", "step-action");
                 isTimer = false;
                 OnClick.InvokeAsync("bukukonfirmasi");
+                return;
             }
             else if (saldorekening == string.Empty || barisbuku == string.Empty || serialbuku == string.Empty)
             {

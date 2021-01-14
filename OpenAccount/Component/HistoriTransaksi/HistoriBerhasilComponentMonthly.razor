@@ -60,12 +60,14 @@
         isTimer = false;
         isTimeOut = true;
         OnClick.InvokeAsync("default");
+        return;
     }
     private async Task Lanjut()
     {
         isTimer = false;
         isTimeOut = true;
         OnClick.InvokeAsync("inputpinmonthly");
+        return;
     }
 
     protected override async Task OnInitializedAsync()
@@ -73,7 +75,7 @@
         await Task.Delay(500);
         trx.statusLayanan = "SUCCESS";
 
-        if (trx.MSISDN.Length > 9 && trx.MSISDN == string.Empty && trx.MSISDN == "" && trx.MSISDN == "000000000000")
+        if (trx.MSISDN.Length > 9 && trx.MSISDN != string.Empty && trx.MSISDN != "" && trx.MSISDN != "000000000000")
         {
             result = await HitServices.SendSms(trx, config);
             if (result.Contains("1111"))
@@ -156,6 +158,7 @@
                 await Task.Delay(2000);
                 isTime = false;
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }

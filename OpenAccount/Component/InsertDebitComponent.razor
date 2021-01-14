@@ -126,6 +126,7 @@
             if (isComplete)
             {
                 OnClick.InvokeAsync("inputpin");
+                return;
             }
         }
         else
@@ -133,6 +134,7 @@
             //trx.statusLayanan = "CANCEL";
             //HitLog.SendLog(trx, config, "INSERT DEBIT: USER Cancel Transaction");
             OnClick.InvokeAsync("default");
+            return;
         }
     }
     private async Task CekKartu()
@@ -234,6 +236,7 @@
             serialPort.Close();
             trx.setErrorService("IEC", "Open Serial EDC Failed");
             OnClick.InvokeAsync("error");
+            return;
         }
 
         Utility.WriteLog("Home condition : EDC serial port write", "step-action");
@@ -294,6 +297,7 @@
                     //HitLog.SendLog(trx, config, "INSERT DEBIT: EDC NAK");
                     trx.setErrorService("IEC", "EDC NAK");
                     OnClick.InvokeAsync("error");
+                    return;
                 }
             }
             await Task.Delay(100);
@@ -360,6 +364,7 @@
             isLoop = false;
             trx.setErrorService("IEC", "Open Serial EDC Failed");
             OnClick.InvokeAsync("error");
+            return;
         }
 
         Utility.WriteLog("Home condition : EDC serial port write", "step-action");
@@ -438,6 +443,7 @@
                 //HitLog.SendLog(trx, config, "INSERT DEBIT: EDC NAK");
                 trx.setErrorService("IEC", "EDC NAK");
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         await Task.Delay(100);

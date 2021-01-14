@@ -294,6 +294,7 @@
                 await Task.Delay(2000);
                 isTime = false;
                 OnClick.InvokeAsync("konfirmasitimeout");
+                return;
             }
         }
     }
@@ -428,6 +429,7 @@
                         trx.AddTrail("GET DATA HISTORI", "", "SUCCESS");
                         await Task.Delay(100);
                         StateHasChanged();
+                        return;
                     }
                     else if ((string)jobResult["RESPONSE"].SelectToken("ERROR_CODE") == "DW-001" && (string)jobResult["RESPONSE"].SelectToken("RESPONSE_CODE") == "01")
                     {
@@ -492,6 +494,7 @@
                 //HitLog.SendLog(trx, config, "HISTORY PILIH: " + errormessage);
                 HitServices.SendLog(trx, config, "HISTORY PILIH: " + errormessage);
                 OnClick.InvokeAsync("error");
+                return;
             }
         }
         catch (Exception ex)
@@ -505,6 +508,7 @@
             //HitLog.SendLog(trx, config, "HISTORY PILIH: " + errormessage);
             HitServices.SendLog(trx, config, "HISTORY PILIH: " + errormessage);
             OnClick.InvokeAsync("error");
+            return;
         }
     }
     private async Task HistoriMonthly()
@@ -513,6 +517,7 @@
         isTimer = false;
         Utility.WriteLog("Histori condition : move to histori Monthly Statement", "step-action");
         OnClick.InvokeAsync("monthlystatement");
+        return;
     }
     private async Task HistoriBulanBerjalan()
     {
@@ -562,6 +567,7 @@
             isTimer = false;
             Utility.WriteLog("Histori condition : move to histori berhasil", "step-action");
             OnClick.InvokeAsync("historiberhasil");
+            return;
         }
     }
 
@@ -594,5 +600,6 @@
         //HitLog.SendLog(trx, config, "HISTORY PILIH: User Cancel Transaction");
         //HitServices.SendLog(trx, config, "HISTORY PILIH: User Cancel Transaction");
         OnClick.InvokeAsync("default");
+        return;
     }
 }

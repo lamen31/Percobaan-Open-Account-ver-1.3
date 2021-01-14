@@ -50,14 +50,18 @@
     private async Task Kembali()
     {
         isTimer = false;
-        trx.statusLayanan = "CANCEL";
-        HitLog.SendLog(trx, config, "KONFIRMASI TIMEOUT: Konfirmasi Timeout");
+        isTimeOut = true;
+        //trx.statusLayanan = "CANCEL";
+        //HitLog.SendLog(trx, config, "KONFIRMASI TIMEOUT: Konfirmasi Timeout");
         OnClick.InvokeAsync("default");
+        return;
     }
     private async Task Lanjut()
     {
         isTimer = false;
+        isTimeOut = true;
         OnClick.InvokeAsync(trx.timeOut);
+        return;
     }
 
     private string nomerRek = string.Empty;
@@ -98,9 +102,10 @@
                 await Task.Delay(2000);
                 isTimer = false;
                 Console.WriteLine("TimeOut Konfirmasi Time Out");
-                trx.statusLayanan = "CANCEL";
-                HitLog.SendLog(trx, config, "KONFIRMASI TIMEOUT: Konfirmasi Timeout");
+                //trx.statusLayanan = "CANCEL";
+                //HitLog.SendLog(trx, config, "KONFIRMASI TIMEOUT: Konfirmasi Timeout");
                 OnClick.InvokeAsync("default");
+                return;
             }
         }
     }
