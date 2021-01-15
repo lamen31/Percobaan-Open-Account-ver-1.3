@@ -65,7 +65,6 @@ namespace Print_PDF
 
             var process = Process.Start(exePath, args);
             process.WaitForExit();
-
             this.Close();
         }
     }
